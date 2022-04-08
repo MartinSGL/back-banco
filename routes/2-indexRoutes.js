@@ -5,7 +5,7 @@ const areaRoutes = require('./areaRoutes')
 const commissionRoutes = require('./commissionRoutes')
 const conceptRoutes = require('./conceptRoutes')
 const denominationRoutes = require('./denominationRoutes')
-const claveRoutes = require('./denominationRoutes')
+const claveRoutes = require('./claveRoutes')
 
 module.exports = app => {
     //login
