@@ -1,16 +1,15 @@
 'use strict';
-const { v4: uuidv4 } = require('uuid');
+const area = require('../models').Area
 module.exports = {
   async up (queryInterface, Sequelize) {
     
     let areas = [
-      // {uuid:uuidv4(),name:'Manager-module',createdAt:new Date(),updatedAt:new Date()},
-      {name:'Manager-module',createdAt:new Date(),updatedAt:new Date()},
-      {name:'Executive-module',createdAt:new Date(),updatedAt:new Date()},
-      {name:'Cashier-module',createdAt:new Date(),updatedAt:new Date()},
+      {name:'manager-module'},
+      {name:'executive-module'},
+      {name:'cashier-module'},
     ]
 
-    await queryInterface.bulkInsert('Areas',areas, {});
+    await area.bulkCreate(areas);
     
   },
 

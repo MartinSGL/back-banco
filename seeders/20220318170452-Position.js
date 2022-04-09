@@ -1,14 +1,15 @@
 'use strict';
+const position = require('../models').Position
 module.exports = {
   async up (queryInterface, Sequelize) {
    
-    let position = [
-      {name:'Manager',createdAt:new Date(),updatedAt:new Date()},
-      {name:'Executive',createdAt:new Date(),updatedAt:new Date()},
-      {name:'Cashier',createdAt:new Date(),updatedAt:new Date()},
+    let positions = [
+      {name:'manager'},
+      {name:'executive'},
+      {name:'cashier'},
     ]
 
-    await queryInterface.bulkInsert('Positions', position, {});
+    await position.bulkCreate(positions);
     
   },
 
