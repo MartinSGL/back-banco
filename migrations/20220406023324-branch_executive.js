@@ -13,10 +13,10 @@ module.exports = {
         type: Sequelize.DATE
       },
       date_end: {
-        allowNull: false,
+        allowNull: true,
         type: Sequelize.DATE
       },
-      ExecutivesId: {
+      ExecutiveId: {
         allowNull:false,
         type: Sequelize.INTEGER,
         references:{
