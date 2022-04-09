@@ -1,28 +1,36 @@
 const executive = require('../models').Executive;
 const position = require('../models').Position;
+const branch = require('../models').Branch
 const {resOk,resError} = require('../helpers/responses')
 const {OK,ERROR,UNAUTHORIZED,VALIDATION,NOT_FOUND} = require('../helpers/status')
+const {sequelize} = require('../models');
 
 const modelName = 'Executive';
 
 module.exports = {
-    async create(req,res){
-        try{
-            const data = await executive.create(req.body)
-            return res.status(OK).json(resOk(data));
-        }catch(error){
-            return res.status(ERROR).send(resError(error))
-        }
-    },
     async index(req,res){
         try{
             const data = await executive.findAll({include: [{model: position}]})
-
             if(data.length === 0){
                 return res.status(OK).json(resOk(null))
             }
 
             return res.status(OK).json(resOk(data))
+        }catch(error){
+            return res.status(ERROR).send(resError(error))
+        }
+    },
+    async create(req,res){
+        try{
+            //inicializar la transaccion para inserciones a mas de una tabla
+            const transaction = await sequelize.transaction(async (t) => {
+                let {name,lastname,userid,password,AreaId,PositionId,date_init,BranchId} = req.body
+                let branchF = await branch.findOne({where:{id:BranchId}})
+                if(branchF===null) return res.status(NOT_FOUND).json(resOk(null,'Branch'))
+                let executiveC = await executive.create({name,lastname,userid,password,AreaId,PositionId},{ transaction: t })
+                await executiveC.addBranch(branchF,{through:{date_init: date_init}, transaction: t })
+                return res.status(OK).json(resOk(executiveC))   
+            })
         }catch(error){
             return res.status(ERROR).send(resError(error))
         }
@@ -64,7 +72,7 @@ module.exports = {
         });
          return res.status(OK).json(resOk(data));
          }catch(error){
-             res.send(400).send(error)
+             res.send(ERROR).send(error)
          }
      }
 }

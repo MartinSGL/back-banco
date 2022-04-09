@@ -1,12 +1,13 @@
 'use strict';
 const area = require('../models').Area
+const {area_1,area_2,area_3} = require('./global-info/variables')
 module.exports = {
   async up (queryInterface, Sequelize) {
     
     let areas = [
-      {name:'manager-module'},
-      {name:'executive-module'},
-      {name:'cashier-module'},
+      {name:area_1},
+      {name:area_2},
+      {name:area_3},
     ]
 
     await area.bulkCreate(areas);

@@ -4,13 +4,15 @@ const router = express.Router()
 const {index,create,update,destroy} = require('../controllers/areaController')
 //funcion para validar campos
 const {validate} = require('../middleware/validators/areaValidator')
+//verificar el token de inicio de sesion
+const validateToken = require('../middleware/validateToken')
 //ruta version 1
 const {PATH_V1} = require('./1-paths')
 
 //anomalies
-router.get(`${PATH_V1}/areas/`,index)
-router.post(`${PATH_V1}/areas/`,validate,create)
-router.put(`${PATH_V1}/areas/:id`,validate,update)
-router.delete(`${PATH_V1}/areas/:id`,destroy)
+router.get(`${PATH_V1}/areas/`,validateToken,index)
+router.post(`${PATH_V1}/areas/`,[validateToken,validate],create)
+router.put(`${PATH_V1}/areas/:id`,[validateToken,validate],update)
+router.delete(`${PATH_V1}/areas/:id`,validateToken,destroy)
 
 module.exports = router
