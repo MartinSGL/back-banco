@@ -5,7 +5,7 @@ module.exports = {
       id: {
         allowNull: false,
         autoIncrement: true,
-        primaryKey: true,
+        unique: true,
         type: Sequelize.INTEGER
       },
       date_init: {
@@ -13,10 +13,11 @@ module.exports = {
         type: Sequelize.DATE
       },
       date_end: {
-        allowNull: false,
+        allowNull: true,
         type: Sequelize.DATE
       },
-      ExecutivesId: {
+      ExecutiveId: {
+        primaryKey:true,
         allowNull:false,
         type: Sequelize.INTEGER,
         references:{
@@ -27,6 +28,7 @@ module.exports = {
         onUpdate:'CASCADE'
       },
       BranchId: {
+        primaryKey:true,
         allowNull:false,
         type: Sequelize.INTEGER,
         references:{
@@ -44,7 +46,7 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DATE
       }
-    });
+    })
   },
   async down(queryInterface, Sequelize) {
     await queryInterface.dropTable('BranchExecutives');

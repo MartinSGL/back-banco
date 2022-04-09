@@ -17,7 +17,7 @@ git clone 'URL del repositorio'
 ## Despues de clonar el repositorio ejecutar npm install 
 ## importante tener installado sequelize-cli global, caso contrario instalarlo
 2-Cambiarse a la rama development - NO HACER NINGUN CAMBIO EN LOS ARCHIVOS ESTANDO EN LA RAMA DEVELOPMENT
-git check out development
+git checkout development
 3-Hace un pull de development para actualizar la rama - NO HACER NINGUN CAMBIO EN LOS ARCHIVOS ESTANDO EN LA RAMA DEVELOPMENT
 git pull origin development
 4-Crear la nueva rama para trabajar tu issue asignamos

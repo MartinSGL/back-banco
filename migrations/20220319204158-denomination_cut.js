@@ -6,10 +6,11 @@ module.exports = {
       id: {
         allowNull: false,
         autoIncrement: true,
-        primaryKey: true,
+        unique:true,
         type: Sequelize.INTEGER
       },
       DenominationId: {
+        primaryKey:true,
         allowNull: false,
         type: Sequelize.STRING(10),
         references:{
@@ -20,6 +21,7 @@ module.exports = {
         onUpdate:'CASCADE'
       },
       CutId: {
+        primaryKey:true,
         allowNull: false,
         type: Sequelize.INTEGER,
         references:{
@@ -41,14 +43,6 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DATE
       }
-    },
-    {
-    indexes: [
-        {
-            unique: true,
-            fields: ['DenominationId', 'CutId']
-        }
-      ]
     })
   },
 

@@ -17,7 +17,7 @@ module.exports = (sequelize, DataTypes) => {
   BranchExecutives.init({
     date_init: DataTypes.DATE,
     date_end: DataTypes.DATE,
-    ExecutivesEd: DataTypes.INTEGER,
+    ExecutiveId: DataTypes.INTEGER,
     BranchId: DataTypes.INTEGER
   }, {
     sequelize,
