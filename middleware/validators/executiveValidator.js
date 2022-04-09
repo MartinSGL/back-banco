@@ -8,16 +8,17 @@ const validate = [
     check('userid').custom(async (value) => {
         try{ 
         const data = await executive.findOne({where: {userid: value}})
-        console.log(data)
         if(data)
             return Promise.reject('The user already exist')
         return true;
         }catch(error){
         }
     }),
-    check('password').isLength({min: 8}),
+    check('password','Its necessary the password').isLength({min: 8}),
     check('AreaId','Its necessary the area').not().isEmpty(),
     check('PositionId','Its necessary the position').not().isEmpty(),
+    check('BranchId','Its necessary the branch').not().isEmpty(),
+    check('date_init','Its necessary the the init_date').not().isEmpty(),
     
     (req,res,next)=>{
         validator(req,res,next)

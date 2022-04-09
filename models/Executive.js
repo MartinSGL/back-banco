@@ -1,7 +1,6 @@
 'use strict';
-const {
-  Model
-} = require('sequelize');
+const { Model } = require('sequelize');
+const bcrypt = require('bcrypt');
 module.exports = (sequelize, DataTypes) => {
   class Executive extends Model {
     /**
@@ -18,9 +17,9 @@ module.exports = (sequelize, DataTypes) => {
         Executive.hasMany(models.Cut)
         Executive.hasMany(models.Transaction)
     }
-    toJSON(){
-      return {...this.get(),id:undefined,AreaId:undefined,PositionId:undefined,BranchId:undefined}
-    }
+    // toJSON(){
+    //   return {...this.get(),id:undefined,AreaId:undefined,PositionId:undefined}
+    // }
   }
   Executive.init({
     name: DataTypes.STRING,
@@ -29,7 +28,20 @@ module.exports = (sequelize, DataTypes) => {
     password: DataTypes.STRING,
     AreaId: DataTypes.INTEGER,
     PositionId: DataTypes.INTEGER
-  }, {
+  },{
+    hooks:{
+      beforeCreate: async (executive) => {
+        const salt = await bcrypt.genSalt(10)
+        const passH = await bcrypt.hash(executive.password,salt)
+        return executive.password = passH;
+      },
+      beforeBulkUpdate: async (executive) => {
+        const salt = await bcrypt.genSalt(10)
+        const passH = await bcrypt.hash(executive.attributes.password,salt)
+        return executive.attributes.password = passH;
+      },
+  
+    },
     sequelize,
     paranoid:true,
     modelName: 'Executive',
