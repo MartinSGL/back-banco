@@ -35,12 +35,6 @@ module.exports = (sequelize, DataTypes) => {
         const passH = await bcrypt.hash(executive.password,salt)
         return executive.password = passH;
       },
-      beforeBulkUpdate: async (executive) => {
-        const salt = await bcrypt.genSalt(10)
-        const passH = await bcrypt.hash(executive.attributes.password,salt)
-        return executive.attributes.password = passH;
-      },
-  
     },
     sequelize,
     paranoid:true,
