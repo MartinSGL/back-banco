@@ -12,9 +12,6 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       Area.hasMany(models.Executive)
     }
-    toJSON(){
-      return {...this.get(),id:undefined}
-    }
   }
   Area.init({
     name: DataTypes.STRING
