@@ -11,10 +11,12 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       Area.hasMany(models.Executive)
+      Area.belongsTo(models.Position)
     }
   }
   Area.init({
-    name: DataTypes.STRING
+    name: DataTypes.STRING,
+    PositionId: DataTypes.INTEGER
   }, {
     sequelize,
     paranoid:true,

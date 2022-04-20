@@ -10,7 +10,6 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
         Executive.belongsTo(models.Area)
-        Executive.belongsTo(models.Position)
         Executive.hasMany(models.Client)
         Executive.hasMany(models.Account)
         Executive.hasMany(models.Card)
@@ -26,8 +25,7 @@ module.exports = (sequelize, DataTypes) => {
     lastname: DataTypes.STRING,
     userid: DataTypes.STRING,
     password: DataTypes.STRING,
-    AreaId: DataTypes.INTEGER,
-    PositionId: DataTypes.INTEGER
+    AreaId: DataTypes.INTEGER
   },{
     hooks:{
       beforeCreate: async (executive) => {

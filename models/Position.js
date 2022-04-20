@@ -10,7 +10,7 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      Position.hasMany(models.Executive)
+      Position.hasMany(models.Area)
     }
   }
   Position.init({
