@@ -16,8 +16,8 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Cut.init({
-    total: DataTypes.FLOAT,
-    differences: DataTypes.FLOAT,
+    total_cut: DataTypes.FLOAT,
+    total_system: DataTypes.FLOAT,
     type: {
       allowNull: false,
       type: DataTypes.ENUM("inital","final","especial")

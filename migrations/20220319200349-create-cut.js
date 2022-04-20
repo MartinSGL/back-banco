@@ -8,14 +8,13 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      total: {
+      total_cut: {
         allowNull: false,
         type: Sequelize.FLOAT
       },
-      differences: {
+      total_system: {
         allowNull: false,
         type: Sequelize.FLOAT,
-        default:0
       },
       type: {
         allowNull: false,
