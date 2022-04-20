@@ -1,36 +1,20 @@
 'use strict';
-
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Accounts', {
+    await queryInterface.createTable('Documents', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      uuid:{
-        allowNull: false,
-        type: Sequelize.UUID,
-        unique:true,
+      document_url: {
+        allowNull:false,
+        type: Sequelize.STRING
       },
       type: {
         allowNull:false,
-        type: Sequelize.ENUM("credit","debit")
-      },
-      amount: {
-        allowNull:false,
-        type: Sequelize.FLOAT
-      },
-      ExecutiveId: {
-        allowNull:false,
-        type: Sequelize.INTEGER,
-        references:{
-          model:'Executives',
-          key:'id'
-        },
-        onDelete:'RESTRICT',
-        onUpdate:'CASCADE'
+        type: Sequelize.ENUM("ine","address","income")
       },
       ClientId: {
         allowNull:false,
@@ -42,8 +26,8 @@ module.exports = {
         onDelete:'RESTRICT',
         onUpdate:'CASCADE'
       },
-      deleteAt:{
-        allowNull: true,
+      deletedAt:{
+        allowNull: false,
         type: Sequelize.DATE
       },
       createdAt: {
@@ -57,6 +41,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Accounts');
+    await queryInterface.dropTable('Documents');
   }
 };

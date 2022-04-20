@@ -17,7 +17,10 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Account.init({
-    uuid:DataTypes.UUID,
+    no_acc: {
+      type:DataTypes.UUID,
+      defaultValue: DataTypes.UUIDV4
+     },
     type: {
       type: DataTypes.ENUM("credit","debit")
     },
