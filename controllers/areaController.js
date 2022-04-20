@@ -1,5 +1,6 @@
 //modelo requerido
 const area= require('../models').Area
+const position= require('../models').Position
 //resOk pide dos parametros (data y nombre del modelo)
 //resError pide dos parametros (error y data)
 const {resOk,resError} = require('../helpers/responses')
@@ -11,7 +12,7 @@ const modelName = 'Area'
 module.exports = {
     async index(req,res){
         try{
-            let data = await area.findAll({}) //buscar todos los registros con deletedAt = null
+            let data = await area.findAll({include:[{model:position}]}) //buscar todos los registros con deletedAt = null
             //si no encuentra ningun registro regresar un estatus OK (200), data en null y nombre del modelo
             if(data===null) return res.status(OK).json(resOk(null)) 
             //si si encuentra registros mandardar los registros en un json

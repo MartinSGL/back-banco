@@ -12,6 +12,16 @@ module.exports = {
         allowNull:false,
         type: Sequelize.STRING,
       },
+      PositionId: {
+        allowNull:false,
+        type: Sequelize.INTEGER,
+        references:{
+          model:'Positions',
+          key:'id'
+        },
+        onDelete:'RESTRICT',
+        onUpdate:'CASCADE'
+      },
       deletedAt:{
         allowNull: true,
         type: Sequelize.DATE

@@ -36,16 +36,6 @@ module.exports = {
         onUpdate:'CASCADE'
 
       },
-      PositionId: {
-        allowNull:false,
-        type: Sequelize.INTEGER,
-        references:{
-          model:'Positions',
-          key:'id'
-        },
-        onDelete:'RESTRICT',
-        onUpdate:'CASCADE'
-      },
       deletedAt:{
         allowNull: true,
         type: Sequelize.DATE
