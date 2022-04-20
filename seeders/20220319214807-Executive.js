@@ -1,12 +1,10 @@
 'use strict';
 const executive = require('../models').Executive
 const branch = require('../models').Branch
-const position = require('../models').Position
 const area = require('../models').Area
 const {branch_name} = require('./global-info/variables')
 module.exports = {
   async up (queryInterface, Sequelize) {
-    let positionF = await position.findOne({where:{name:'manager'}})
     let areaF = await area.findOne({where:{name:'manager-module'}})
       let executives = [
           {
@@ -15,7 +13,6 @@ module.exports = {
             userid:"manuel",
             password:"12345678",
             AreaId:areaF.id,
-            PositionId:positionF.id,
         },
       ]
   
