@@ -16,6 +16,7 @@ module.exports = {
         type: Sequelize.STRING,
       },
       PositionId: {
+        allowNull:false,
         type: Sequelize.INTEGER,
         references:{
           model:'Positions',
