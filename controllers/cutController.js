@@ -95,7 +95,6 @@ module.exports = {
                         where:{id},returning:true,plain:true
                     },
                     { transaction: t })
-                    console.log(cutU.id)
                 //borrar registros anterirores
                 let deleteC = await cutU.setDenominations([],{ransaction: t}) 
                 

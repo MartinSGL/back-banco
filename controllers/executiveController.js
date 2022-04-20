@@ -11,7 +11,7 @@ const modelName = 'Executive';
 module.exports = {
     async index(req,res){
         try{
-            const data = await executive.findAll({include: [{model: position},{model:area}]})
+            const data = await executive.findAll({include: [{model:area,include:[{model:position}]}]})
             if(data.length === 0){
                 return res.status(OK).json(resOk(null))
             }
@@ -25,10 +25,10 @@ module.exports = {
         try{
             //inicializar la transaccion para inserciones a mas de una tabla
             const transaction = await sequelize.transaction(async (t) => {
-                let {name,lastname,userid,password,AreaId,PositionId} = req.body
+                let {name,lastname,userid,password,AreaId} = req.body
                 let branchF = await branch.findOne({where:{id:1}})
                 if(branchF===null) return res.status(NOT_FOUND).json(resOk(null,'Branch'))
-                let executiveC = await executive.create({name,lastname,userid,password,AreaId,PositionId},{ transaction: t })
+                let executiveC = await executive.create({name,lastname,userid,password,AreaId},{ transaction: t })
                 await executiveC.addBranch(branchF,{through:{date_init: Date()}, transaction: t })
                 return res.status(OK).json(resOk(executiveC))   
             })
@@ -39,7 +39,7 @@ module.exports = {
     async show(req,res){
         try{
             const {id} = req.params;
-            const data = await executive.findOne({where: {id}, include: [{model: position}]})
+            const data = await executive.findOne({where: {id}, include: [{model:area,include:[{model:position}]}]})
             if(!data){
                 return res.status(NOT_FOUND).json(resOk(null,modelName)) 
             }
@@ -52,10 +52,10 @@ module.exports = {
     async update(req,res){
         try{
             const {id} = req.params;
-            const {name,lastname,userid,PositionId,AreaId} = req.body
+            const {name,lastname,userid,AreaId} = req.body
             let idFound = await executive.findOne({where:{id}})
             if (idFound===null) return res.status(NOT_FOUND).json(resOk(null,modelName)) 
-            let [,data] = await executive.update({name,lastname,userid,PositionId,AreaId},{
+            let [,data] = await executive.update({name,lastname,userid,AreaId},{
                 where:{id},returning:true,plain:true
             })
 

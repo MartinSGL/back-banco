@@ -1,4 +1,7 @@
 'use strict';
+
+const { sequelize } = require("../models");
+
 module.exports = {
   async up(queryInterface, Sequelize) {
     await queryInterface.createTable('Areas', {
@@ -11,6 +14,15 @@ module.exports = {
       name: {
         allowNull:false,
         type: Sequelize.STRING,
+      },
+      PositionId: {
+        type: Sequelize.INTEGER,
+        references:{
+          model:'Positions',
+          key:'id'
+        },
+        onDelete:'RESTRICT',
+        onUpdate:'CASCADE'
       },
       deletedAt:{
         allowNull: true,
