@@ -13,6 +13,7 @@ module.exports = (sequelize, DataTypes) => {
       Client.belongsTo(models.Executive)
       Client.hasMany(models.Account)
       Client.hasMany(models.Token)
+      Client.hasMany(models.Document)
     }
   }
   Client.init({

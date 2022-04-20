@@ -57,15 +57,18 @@ module.exports = {
       },
       curp: {
         allowNull:false,
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        unique:true,
       },
       rfc: {
         allowNull:false,
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        unique:true,
       },
       no_ine: {
         allowNull:false,
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
+        unique:true,
       },
       email: {
         allowNull:false,
