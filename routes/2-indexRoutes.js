@@ -6,22 +6,28 @@ const commissionRoutes = require('./commissionRoutes')
 const conceptRoutes = require('./conceptRoutes')
 const denominationRoutes = require('./denominationRoutes')
 const claveRoutes = require('./claveRoutes')
+const clientRoutes = require('./clientRoutes')
+const cutRoutes = require('./cutRoutes')
 
 module.exports = app => {
     //login
-    app.use(loginRoutes)//alex
+    app.use(loginRoutes)
     //executive
-    app.use(executiveRoutes) //manuel
+    app.use(executiveRoutes)
     //areas
-    app.use(areaRoutes) // moikas
+    app.use(areaRoutes)
     //commissions
-    app.use(commissionRoutes) //ivan
+    app.use(commissionRoutes)
     //concepts
-    app.use(conceptRoutes) //salvador
+    app.use(conceptRoutes)
     //denominations
-    app.use(denominationRoutes) //kevin
+    app.use(denominationRoutes) 
     //positions
-    app.use(positionRoutes) // tomen este como ejemplo
+    app.use(positionRoutes) 
     //clave para realizar transacciones
-    app.use(claveRoutes)//gaitan
+    app.use(claveRoutes)
+    //clients
+    app.use(clientRoutes)
+    //cuts
+    app.use(cutRoutes)
 }

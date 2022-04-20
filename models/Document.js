@@ -15,7 +15,7 @@ module.exports = (sequelize, DataTypes) => {
   }
   Document.init({
     document_url: DataTypes.STRING,
-    type: Sequelize.ENUM("ine","address","income"),
+    type: DataTypes.ENUM("ine","address","income"),
     ClientId: DataTypes.INTEGER
   }, {
     sequelize,
