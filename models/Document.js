@@ -10,13 +10,12 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      Document.belongsTo(models.Client)
+      Document.belongsTo(models.Client);
     }
   }
   Document.init({
     document_url: DataTypes.STRING,
-    type: DataTypes.ENUM("ine","address","income"),
-    ClientId: DataTypes.INTEGER
+    type: DataTypes.ENUM("ine","address","income")
   }, {
     sequelize,
     paranoid:true,

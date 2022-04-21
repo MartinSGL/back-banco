@@ -41,7 +41,7 @@ module.exports = {
         onDelete:'RESTRICT',
         onUpdate:'CASCADE'
       },
-      deleteAt:{
+      deletedAt:{
         allowNull:true,
         type: Sequelize.DATE
       },
