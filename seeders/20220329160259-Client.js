@@ -1,58 +1,165 @@
-'use strict';
-// const client = require('../models').Client
+"use strict";
+
 module.exports = {
-  async up (queryInterface, Sequelize) {
-  //   let client = [{
-  //     name:'moises',
-  //     lastname:'moreno castro',
-  //     gender:'1',
-  //     street:'en tu corazon',
-  //     number_ext:12,
-  //     colony:'viva cristo rey',
-  //     postalcode:28400,
-  //     city:'zapopan',
-  //     municipality:'zapopan',
-  //     state:'jalisco',
-  //     celphone:'3311231234',
-  //     landline:'3311231235',
-  //     curp:'MOCMOOO419HNERSSA8',
-  //     rfc:'MOCMOOO419AAA',
-  //     no_ine:'123456789011223344',
-  //     email:'moikas@gmail.com',
-  //     ExecutiveId:2,
-  //     createdAt:new Date(),
-  //     updatedAt:new Date()
+  async up(queryInterface, Sequelize) {
+    await queryInterface.bulkInsert("Clients", [
+      {
+        name: "Jose",
+        lastname: "Gaitan Marquez",
+        gender: "1",
+        street: "Republica de cuba",
+        number_ext: 12,
+        colony: "Tlaquepaque centro",
+        postalcode: 45500,
+        city: "Guadalajara",
+        municipality: "Tlaquepaque",
+        state: "Jalisco",
+        celphone: "1111111111",
+        landline: "2222222222",
+        curp: "JGMAQC120101HDFR02",
+        rfc: "JGMAQC120101HDFR02",
+        no_ine: "JGMAQC120101HDFR02",
+        email: "gaitan138@gmail.com",
+        ExecutiveId: 1,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        name: "moises",
+        lastname: "moreno castro",
+        gender: "1",
+        street: "en tu corazon",
+        number_ext: 12,
+        colony: "viva cristo rey",
+        postalcode: 28400,
+        city: "zapopan",
+        municipality: "zapopan",
+        state: "jalisco",
+        celphone: "1111111112",
+        landline: "2222222223",
+        curp: "MOCMOOO419HNERSSA8",
+        rfc: "MOCMOOO419AAA",
+        no_ine: "123456789011223344",
+        email: "moikas@gmail.com",
+        ExecutiveId: 1,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        name: "Felipe",
+        lastname: "Gonzalez",
+        gender: "1",
+        street: "Calumnia",
+        number_ext: 16,
+        colony: "naranjo",
+        postalcode: 21500,
+        city: "Tehualpenacho",
+        municipality: "tlahualcoyotl",
+        state: "colima",
+        celphone: "4851254632",
+        landline: "3335478546",
+        curp: "GONFELG120101HDFR02",
+        rfc: "GONFELG120101HDFR02",
+        no_ine: "76856785678456783456",
+        email: "gonfelix34@gmail.com",
+        ExecutiveId: 1,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        name: "Gerardo",
+        lastname: "Kirchner",
+        gender: "1",
+        street: "Francisco",
+        number_ext: 256,
+        colony: "lomas del pozoyocle",
+        postalcode: 78451,
+        city: "Aviridis",
+        municipality: "Avespina",
+        state: "Nayarit",
+        celphone: "8787254632",
+        landline: "9521365478",
+        curp: "KIRGERG120101HDFR02",
+        rfc: "KIRGERG120101HDFR02",
+        no_ine: "6576854785678456783456",
+        email: "kirger90@gmail.com",
+        ExecutiveId: 1,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      },
+      {
+        name: "Cesar",
+        lastname: "Hernandez",
+        gender: "1",
+        street: "Tijuana",
+        number_ext: 122,
+        colony: "Nueva California",
+        postalcode: 27089,
+        city: "Torreon",
+        municipality: "Torreon",
+        state: "coahuila",
+        celphone: "8712090393",
+        landline: "87112090393",
+        curp: "HERCESC120101HDFR02",
+        rfc: "HERCESC120101HDFR02",
+        no_ine: "23545623634623462346",
+        email: "grupnaza@gmail.com",
+        ExecutiveId: 1,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      }
 
-  //   },{
-  //     name:'moises 2',
-  //     lastname:'moreno castro',
-  //     gender:'1',
-  //     street:'en tu corazon',
-  //     number_ext:12,
-  //     colony:'viva cristo rey',
-  //     postalcode:28400,
-  //     city:'zapopan',
-  //     municipality:'zapopan',
-  //     state:'jalisco',
-  //     celphone:'3311231234',
-  //     landline:'3311231235',
-  //     curp:'MOCMOOO419HNERSSA2',
-  //     rfc:'MOCMOOO419AA2',
-  //     no_ine:'123456789011223342',
-  //     email:'moikas2@gmail.com',
-  //     ExecutiveId:2,
-  //     createdAt:new Date(),
-  //     updatedAt:new Date()
+      
+    ]);
 
-  //   }]
+    //   let Clients = [{
+    //     name:'moises',
+    //     lastname:'moreno castro',
+    //     gender:'1',
+    //     street:'en tu corazon',
+    //     number_ext:12,
+    //     colony:'viva cristo rey',
+    //     postalcode:28400,
+    //     city:'zapopan',
+    //     municipality:'zapopan',
+    //     state:'jalisco',
+    //     celphone:'3311231234',
+    //     landline:'3311231235',
+    //     curp:'MOCMOOO419HNERSSA8',
+    //     rfc:'MOCMOOO419AAA',
+    //     no_ine:'123456789011223344',
+    //     email:'moikas@gmail.com',
+    //     ExecutiveId:2,
+    //     createdAt:new Date(),
+    //     updatedAt:new Date()
 
-  //   await queryInterface.bulkInsert('Clients', client, {});
-    
+    //   },{
+    //     name:'moises 2',
+    //     lastname:'moreno castro',
+    //     gender:'1',
+    //     street:'en tu corazon',
+    //     number_ext:12,
+    //     colony:'viva cristo rey',
+    //     postalcode:28400,
+    //     city:'zapopan',
+    //     municipality:'zapopan',
+    //     state:'jalisco',
+    //     celphone:'3311231234',
+    //     landline:'3311231235',
+    //     curp:'MOCMOOO419HNERSSA2',
+    //     rfc:'MOCMOOO419AA2',
+    //     no_ine:'123456789011223342',
+    //     email:'moikas2@gmail.com',
+    //     ExecutiveId:2,
+    //     createdAt:new Date(),
+    //     updatedAt:new Date()
+
+    //   }]
+
+    //   await queryInterface.bulkInsert('Clientss', Clients, {});
   },
 
-  async down (queryInterface, Sequelize) {
-    
-    await queryInterface.bulkDelete('Clients', null, {});
-     
-  }
+  async down(queryInterface, Sequelize) {
+    await queryInterface.bulkDelete("Clients", null, {});
+  },
 };
