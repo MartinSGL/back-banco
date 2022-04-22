@@ -60,9 +60,15 @@ module.exports = {
         onDelete:'RESTRICT',
         onUpdate:'CASCADE'
       },
-      deleteAt:{
-        allowNull: true,
-        type: Sequelize.DATE
+      CardId:{
+        allowNull: false,
+        type: Sequelize.INTEGER,
+        references:{
+          model:'Cards',
+          key:'id'
+        },
+        onDelete:'RESTRICT',
+        onUpdate:'CASCADE'
       },
       createdAt: {
         allowNull: false,
