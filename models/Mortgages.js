@@ -3,29 +3,28 @@ const {
   Model
 } = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class Card extends Model {
+  class Mortgage extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      Card.belongsTo(models.Account)
-      Card.belongsTo(models.Executive)
-      Card.hasOne(models.Replacement)
-      Card.hasMany(models.Transaction)
+      Mortgage.belongsTo(models.Interest)
+      Mortgage.belongsTo(models.Account)
     }
   }
-  Card.init({
-    card_number: DataTypes.STRING,
-    nip: DataTypes.INTEGER,
-    expiration_date: DataTypes.DATE,
-    ExecutiveId: DataTypes.INTEGER,
+  Mortgage.init({
+    solicited_date: DataTypes.DATE,
+    aproved_date: DataTypes.DATE,
+    solicited_amount: DataTypes.FLOAT,
+    aproved_amount: DataTypes.FLOAT,
+    InterestId: DataTypes.INTEGER,
     AccountId: DataTypes.INTEGER
   }, {
     sequelize,
     paranoid:true,
-    modelName: 'Card',
+    modelName: 'Mortgage',
   });
-  return Card;
+  return Mortgage;
 };

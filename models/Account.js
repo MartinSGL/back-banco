@@ -14,6 +14,8 @@ module.exports = (sequelize, DataTypes) => {
       Account.belongsTo(models.Executive)
       Account.hasMany(models.Card)
       Account.hasMany(models.Beneficiary)
+      Account.hasOne(models.Mortgage)
+      Account.belongsToMany(models.Creditdetail,{through:'AccountCreditdetails'})
     }
   }
   Account.init({
@@ -22,7 +24,7 @@ module.exports = (sequelize, DataTypes) => {
       defaultValue: DataTypes.UUIDV4
      },
     type: {
-      type: DataTypes.ENUM("credit","debit")
+      type: DataTypes.ENUM("credit","debit","mortgage")
     },
     amount: DataTypes.FLOAT,
     ExecutiveId: DataTypes.INTEGER,

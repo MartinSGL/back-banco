@@ -1,42 +1,34 @@
 'use strict';
-
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.createTable('Accounts', {
+    await queryInterface.createTable('Creditdetails', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      no_acc:{
+      name:{
         allowNull: false,
-        type: Sequelize.UUID,
-        unique:true,
+        type: Sequelize.STRING
       },
-      type: {
-        allowNull:false,
-        type: Sequelize.ENUM("credit","debit","mortgage")
+      date: {
+        allowNull: false,
+        type: Sequelize.DATE
       },
-      amount: {
-        allowNull:false,
+      interest: {
+        allowNull: false,
         type: Sequelize.FLOAT
       },
-      ExecutiveId: {
-        allowNull:false,
-        type: Sequelize.INTEGER,
-        references:{
-          model:'Executives',
-          key:'id'
-        },
-        onDelete:'RESTRICT',
-        onUpdate:'CASCADE'
+      extra_charge: {
+        allowNull: false,
+        type: Sequelize.FLOAT
       },
-      ClientId: {
-        allowNull:false,
+      AccountId: {
+        allowNull: false,
         type: Sequelize.INTEGER,
         references:{
-          model:'Clients',
+          model:'Guarantees',
           key:'id'
         },
         onDelete:'RESTRICT',
@@ -57,6 +49,6 @@ module.exports = {
     });
   },
   async down(queryInterface, Sequelize) {
-    await queryInterface.dropTable('Accounts');
+    await queryInterface.dropTable('Creditdetails');
   }
 };
