@@ -10,12 +10,12 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      Interest.belongsTo(models.Debterm)
       Interest.hasMany(models.Mortgage)
     }
   }
   Interest.init({
     name:DataTypes.STRING,
+    debterms:DataTypes.INTEGER,
     date: DataTypes.DATE,
     insterest: DataTypes.FLOAT,
     extra_charge: DataTypes.FLOAT,

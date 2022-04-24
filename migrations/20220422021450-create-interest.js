@@ -12,6 +12,10 @@ module.exports = {
         allowNull: false,
         type: Sequelize.STRING
       },
+      debterms:{
+        allowNull: false,
+        type: Sequelize.INTEGER
+      },
       date: {
         allowNull: false,
         type: Sequelize.DATE
@@ -23,16 +27,6 @@ module.exports = {
       extra_charge: {
         allowNull: false,
         type: Sequelize.FLOAT
-      },
-      DebtermId: {
-        allowNull: false,
-        type: Sequelize.INTEGER,
-        references:{
-          model:'Debterms',
-          key:'id'
-        },
-        onDelete:'RESTRICT',
-        onUpdate:'CASCADE'
       },
       deletedAt:{
         allowNull: true,
