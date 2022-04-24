@@ -6,10 +6,8 @@ const {resOk,resError} = require('../helpers/responses')
 module.exports = (req,res,next)=>{
     try{
     const authorization = req.get('authorization')
-    console.log(authorization)
     if(authorization && authorization.toLowerCase().startsWith('bearer')){
         token = authorization.substring(7)
-        console.log(token)
     }
 
     const decodedToken = jwt.verify(token,process.env.FIRMA)

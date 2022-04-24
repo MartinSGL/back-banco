@@ -20,8 +20,8 @@ module.exports = (sequelize, DataTypes) => {
   }
   Account.init({
     no_acc: {
-      type:DataTypes.UUID,
-      defaultValue: DataTypes.UUIDV4
+      type:DataTypes.STRING,
+      defaultValue : Date.now().toString()
      },
     type: {
       type: DataTypes.ENUM("credit","debit","mortgage")

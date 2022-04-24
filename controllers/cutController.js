@@ -34,7 +34,8 @@ module.exports = {
     async create(req, res){
         try{
             // datos para cortes
-            let {total_cut,total_system,type,CashboxId,ExecutiveId} = req.body
+            let {total_cut,total_system,type,CashboxId} = req.body
+            let ExecutiveId = req.session.id
             //m10c,m50c,m1p,m2p,m5p,m10p,m20p,b20p,b50p,b100p,b200p,b500p,b1000p ids de denominaciones
             let denominations = req.body.denominations
             //validar que el total coincida con las denominaciones
@@ -76,7 +77,9 @@ module.exports = {
             //id
             let {id} = req.params
             // datos para cortes
-            let {total_cut,total_system,type,CashboxId,ExecutiveId} = req.body
+            let {total_cut,total_system,type,CashboxId} = req.body
+            //obtener el id del toekn
+            let ExecutiveId = req.session.id
             //m10c,m50c,m1p,m2p,m5p,m10p,m20p,b20p,b50p,b100p,b200p,b500p,b1000p ids de denominaciones
             let denominations = req.body.denominations
             //validar que exista el corte

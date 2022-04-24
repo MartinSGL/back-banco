@@ -10,8 +10,7 @@ const validateToken = require('../middleware/validateToken')
 const {PATH_V1} = require('./1-paths')
 
 //anomalies
-router.put(`${PATH_V1}/token/:id`,validateToken,create)
-router.post(`${PATH_V1}/token/:id`,[validateToken,validate],validateT)
+router.post(`${PATH_V1}/tokens/`,[validateToken,validate],create)
 
 
 module.exports = router

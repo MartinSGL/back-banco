@@ -8,10 +8,6 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      date: {
-        allowNull: false,
-        type: Sequelize.DATE
-      },
       CardId: {
         allowNull:false,
         type: Sequelize.INTEGER,

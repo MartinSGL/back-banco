@@ -11,7 +11,7 @@ module.exports = {
       },
       no_acc:{
         allowNull: false,
-        type: Sequelize.UUID,
+        type: Sequelize.STRING,
         unique:true,
       },
       type: {
