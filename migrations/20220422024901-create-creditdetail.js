@@ -12,6 +12,10 @@ module.exports = {
         allowNull: false,
         type: Sequelize.STRING
       },
+      debterms:{
+        allowNull: false,
+        type: Sequelize.INTEGER
+      },
       interest: {
         allowNull: false,
         type: Sequelize.FLOAT

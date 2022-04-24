@@ -1,8 +1,8 @@
 "use strict";
-
+const client = require('../models').Client
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.bulkInsert("Clients", [
+    await client.bulkCreate([
       {
         name: "Jose",
         lastname: "Gaitan Marquez",
@@ -21,8 +21,6 @@ module.exports = {
         no_ine: "JGMAQC120101HDFR02",
         email: "martingaytan.lugo@gmail.com",
         ExecutiveId: 1,
-        createdAt: new Date(),
-        updatedAt: new Date(),
       },
       {
         name: "moises",
@@ -42,8 +40,6 @@ module.exports = {
         no_ine: "123456789011223344",
         email: "moikas@gmail.com",
         ExecutiveId: 1,
-        createdAt: new Date(),
-        updatedAt: new Date(),
       },
       {
         name: "Felipe",
@@ -63,8 +59,6 @@ module.exports = {
         no_ine: "76856785678456783456",
         email: "gonfelix34@gmail.com",
         ExecutiveId: 1,
-        createdAt: new Date(),
-        updatedAt: new Date(),
       },
       {
         name: "Gerardo",
@@ -84,8 +78,6 @@ module.exports = {
         no_ine: "6576854785678456783456",
         email: "kirger90@gmail.com",
         ExecutiveId: 1,
-        createdAt: new Date(),
-        updatedAt: new Date(),
       },
       {
         name: "Cesar",
@@ -105,8 +97,6 @@ module.exports = {
         no_ine: "23545623634623462346",
         email: "grupnaza@gmail.com",
         ExecutiveId: 1,
-        createdAt: new Date(),
-        updatedAt: new Date(),
       }
     ]);
   },
