@@ -8,6 +8,8 @@ const denominationRoutes = require('./denominationRoutes')
 const claveRoutes = require('./claveRoutes')
 const clientRoutes = require('./clientRoutes')
 const cutRoutes = require('./cutRoutes')
+const creditdetailRoutes = require('./creditdetailRoutes')
+const interestRoutes = require('./interestRoutes')
 
 module.exports = app => {
     //login
@@ -30,4 +32,9 @@ module.exports = app => {
     app.use(clientRoutes)
     //cuts
     app.use(cutRoutes)
+    //interest
+    app.use(interestRoutes)
+    //creditdetails
+    app.use(creditdetailRoutes)
+    
 }
