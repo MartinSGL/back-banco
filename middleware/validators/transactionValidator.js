@@ -5,6 +5,7 @@ const validate = [
     check('token_s').not().isEmpty(),
     check('card_no').not().isEmpty(),
     check('nip').not().isEmpty(),
+    check('date').not().isDate(),
     check('amount').not().isEmpty().isNumeric(),
     check('concept').not().isEmpty().isNumeric(),
     

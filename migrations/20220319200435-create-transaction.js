@@ -8,6 +8,10 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
+      date:{
+        allowNull: false,
+        type:Sequelize.DATE,
+      },
       amount: {
         allowNull: false,
         type: Sequelize.FLOAT

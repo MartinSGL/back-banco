@@ -70,7 +70,7 @@ module.exports = {
           return res.status(ERROR).send(resError(error));
         }
         console.log("Email sent: " + info.response);
-        return res.status(OK).json(resOk(data));
+        return res.status(OK).json(resOk('datos enviados al correo'));
       });
     } catch (err) {
       //si se comete un error mandar un status ERROR = 400

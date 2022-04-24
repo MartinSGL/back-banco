@@ -3,7 +3,8 @@ const account = require('../models').Account
 module.exports = {
   async up (queryInterface, Sequelize) {
 
-     await account.addCreditdetails(1,[4]);
+    let accountF = await account.findOne({where:{type:'credit'}})
+    await accountF.addCreditdetails(1,[4]);
     
   },
 

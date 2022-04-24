@@ -1,8 +1,8 @@
 "use strict";
-const beneficiarie = require('../models').Beneficiarie
+const beneficiary = require('../models').Beneficiary
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await beneficiarie.bulkCreate([
+    await beneficiary.bulkCreate([
       {
         name: "Juan",
         lastname: "Perez",

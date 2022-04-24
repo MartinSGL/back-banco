@@ -37,7 +37,7 @@ module.exports = {
     async create(req,res){
         console.log('entro a create')
         try{
-            const {card_no,nip,amount,concept} = req.body
+            const {card_no,nip,amount,concept,date} = req.body
             const {id_v,no_acc_v,amount_v,type_v,id_card} = req.account
             const {id} = req.session
             let commissionF = await commission.findOne({})
@@ -54,6 +54,7 @@ module.exports = {
                     let transaccion = await transaction.create(
                         {
                             amount,
+                            date,
                             CommissionId:commissionF.id,
                             ConceptId:concept,
                             ExecutiveId:id,
@@ -75,6 +76,7 @@ module.exports = {
                     let transaccion = await transaction.create(
                         {
                             amount,
+                            date,
                             CommissionId:commissionF.id,
                             ConceptId:concept,
                             ExecutiveId:id,
@@ -106,6 +108,7 @@ module.exports = {
                     let transaccion = await transaction.create(
                         {
                             amount,
+                            date,
                             CommissionId:commissionF.id,
                             ConceptId:concept,
                             ExecutiveId:id,
