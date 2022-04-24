@@ -12,6 +12,7 @@ module.exports = (sequelize, DataTypes) => {
     static associate(models) {
       Mortgage.belongsTo(models.Interest)
       Mortgage.belongsTo(models.Account)
+      Mortgage.hasMany(models.Guarantee)
     }
   }
   Mortgage.init({

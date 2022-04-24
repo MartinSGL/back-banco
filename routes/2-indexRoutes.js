@@ -10,6 +10,8 @@ const clientRoutes = require('./clientRoutes')
 const cutRoutes = require('./cutRoutes')
 const creditdetailRoutes = require('./creditdetailRoutes')
 const interestRoutes = require('./interestRoutes')
+const morgagesRoutes = require('./morgageRoutes')
+const accountRoutes = require('./accountRoutes')
 
 module.exports = app => {
     //login
@@ -36,5 +38,9 @@ module.exports = app => {
     app.use(interestRoutes)
     //creditdetails
     app.use(creditdetailRoutes)
-    
+    //morgages
+    app.use(morgagesRoutes)
+    //accounts
+    app.use(accountRoutes)
+
 }
