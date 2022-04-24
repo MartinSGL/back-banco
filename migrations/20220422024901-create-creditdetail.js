@@ -24,16 +24,6 @@ module.exports = {
         allowNull: false,
         type: Sequelize.FLOAT
       },
-      AccountId: {
-        allowNull: false,
-        type: Sequelize.INTEGER,
-        references:{
-          model:'Guarantees',
-          key:'id'
-        },
-        onDelete:'RESTRICT',
-        onUpdate:'CASCADE'
-      },
       deletedAt:{
         allowNull: true,
         type: Sequelize.DATE

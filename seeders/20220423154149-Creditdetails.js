@@ -4,8 +4,8 @@ module.exports = {
   async up (queryInterface, Sequelize) {
     
     let credits = [
-      {name:'premium',date:new Date(),insterest:0.05,extra_charge:100},
-      {name:'standar',date:new Date(),insterest:0.10,extra_charge:200},
+      {name:'premium',date:new Date(),interest:0.05,extra_charge:100},
+      {name:'standar',date:new Date(),interest:0.10,extra_charge:200},
     ]
 
       await creditdetail.bulkCreate(credits);

@@ -17,9 +17,8 @@ module.exports = (sequelize, DataTypes) => {
     name:DataTypes.STRING,
     debterms:DataTypes.INTEGER,
     date: DataTypes.DATE,
-    insterest: DataTypes.FLOAT,
-    extra_charge: DataTypes.FLOAT,
-    DebtermId: DataTypes.INTEGER
+    interest: DataTypes.FLOAT,
+    extra_charge: DataTypes.FLOAT
   }, {
     sequelize,
     modelName: 'Interest',

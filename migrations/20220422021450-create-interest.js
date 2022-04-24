@@ -20,7 +20,7 @@ module.exports = {
         allowNull: false,
         type: Sequelize.DATE
       },
-      insterest: {
+      interest: {
         allowNull: false,
         type: Sequelize.FLOAT
       },
