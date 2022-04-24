@@ -12,10 +12,6 @@ module.exports = {
         allowNull: false,
         type: Sequelize.STRING
       },
-      date: {
-        allowNull: false,
-        type: Sequelize.DATE
-      },
       interest: {
         allowNull: false,
         type: Sequelize.FLOAT
