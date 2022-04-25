@@ -7,7 +7,7 @@ const {
   createDebito,
   createCredito,
   createMorgages,
-} = require("../controllers/accountsController");
+} = require("../controllers/accountController");
 //funcion para validar campos
 const { validate } = require("../middleware/validators/areaValidator");
 //verificar el token de inicio de sesion
