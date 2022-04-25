@@ -2,18 +2,11 @@
 const client = require("../models").Client;
 const token = require("../models").Token;
 require("dotenv").config();
-
 //resOk pide dos parametros (data y nombre del modelo)
 //resError pide dos parametros (error y data)
 const { resOk, resError } = require("../helpers/responses");
 //revisar el helper para ver el numero de estatus
-const {
-  OK,
-  ERROR,
-  UNAUTHORIZED,
-  VALIDATION,
-  NOT_FOUND,
-} = require("../helpers/status");
+const {OK,ERROR,UNAUTHORIZED,VALIDATION,NOT_FOUND,} = require("../helpers/status");
 const { Op } = require("sequelize");
 const nodemailer = require("nodemailer");
 
@@ -23,12 +16,12 @@ module.exports = {
   async create(req, res) {
     try {
       let randnum = Math.floor(Math.random() * 900000) + 100000;
-      let hours = 1;
+      let hours = 12;
       let date = new Date();
       let expire_token = new Date(
         new Date(date).setHours(date.getHours() + hours)
       );
-      let { id } = req.params; // obtener el id destructurado del parametro enviado por la URL
+      let { id } = req.body; // obtener el id destructurado del parametro enviado por el body
 
       //buscar si existe el ClientId en la base de datos o si no crear un nuevo token
       let idFound = await token.findOne({ where: { ClientId: id } }); //comprobar si existe el id en la base de datos
@@ -77,36 +70,11 @@ module.exports = {
           return res.status(ERROR).send(resError(error));
         }
         console.log("Email sent: " + info.response);
-        return res.status(OK).json(resOk(data));
+        return res.status(OK).json(resOk('datos enviados al correo'));
       });
     } catch (err) {
       //si se comete un error mandar un status ERROR = 400
       return res.status(ERROR).send(resError(err));
     }
-  },
-  async validateT(req, res) {
-    try {
-      let { id } = req.params; // obtener el id destructurado del parametro enviado por la URL
-
-      let { tokenf } = req.body; // obtener el token destructurado del body enviado por la URL
-      //compobar si el token aun esta vigente
-
-      let tokenFound = await token.findOne({
-        where: {
-          token: tokenf,
-          ClientId: id,
-          expire_date: { [Op.gt]: new Date() },
-        },
-      });
-
-      if (tokenFound === null) {
-        return res.status(OK).json(resError("invalid token", null));
-      } else {
-        return res.status(OK).json(resOk("Correcto el token"));
-      }
-    } catch (error) {
-      //si se comete un error mandar un status ERROR = 400
-      return res.status(ERROR).json(resError(error));
-    }
-  },
+  }
 };

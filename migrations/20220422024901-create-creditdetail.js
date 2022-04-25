@@ -12,9 +12,9 @@ module.exports = {
         allowNull: false,
         type: Sequelize.STRING
       },
-      date: {
+      debterms:{
         allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.INTEGER
       },
       interest: {
         allowNull: false,

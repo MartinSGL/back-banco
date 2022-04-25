@@ -13,18 +13,16 @@ module.exports = (sequelize, DataTypes) => {
       Transaction.belongsTo(models.Executive)
       Transaction.belongsTo(models.Commission)
       Transaction.belongsTo(models.Concept)
-      Transaction.belongsTo(models.Cashbox)
       Transaction.belongsTo(models.Card)
     }
   }
   Transaction.init({
-    inicial_amount: DataTypes.FLOAT,
-    final_amount: DataTypes.FLOAT,
-    type: DataTypes.BOOLEAN,
+    date:DataTypes.DATE,
     amount: DataTypes.FLOAT,
     ExecutiveId: DataTypes.INTEGER,
     CommissionId: DataTypes.INTEGER,
-    ConceptId: DataTypes.INTEGER
+    ConceptId: DataTypes.INTEGER,
+    CardId: DataTypes.INTEGER
   }, {
     sequelize,
     modelName: 'Transaction',

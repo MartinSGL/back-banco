@@ -15,7 +15,7 @@ module.exports = (sequelize, DataTypes) => {
   }
   Creditdetail.init({
     name:DataTypes.STRING,
-    date: DataTypes.DATE,
+    debterms:DataTypes.INTEGER,
     interest: DataTypes.FLOAT,
     extra_charge: DataTypes.FLOAT
   }, {

@@ -16,7 +16,6 @@ module.exports = (sequelize, DataTypes) => {
   Interest.init({
     name:DataTypes.STRING,
     debterms:DataTypes.INTEGER,
-    date: DataTypes.DATE,
     interest: DataTypes.FLOAT,
     extra_charge: DataTypes.FLOAT
   }, {

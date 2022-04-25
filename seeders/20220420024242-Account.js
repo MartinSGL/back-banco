@@ -4,32 +4,37 @@ module.exports = {
   async up (queryInterface, Sequelize) {
     let accounts = [
       {
-        type:"credit",
-        amount: "100",
+        no_acc:(Date.now()).toString(),
+        type:"debit",
+        amount: "20000",
         ExecutiveId: "1",
         ClientId: "1",
       },
       {
+        no_acc:(Date.now()+1).toString(),
         type:"debit",
-        amount: "200",
+        amount: "30000",
         ExecutiveId: "1",
         ClientId: "2",
       },
       {
-        type:"credit",
-        amount: "300",
+        no_acc:(Date.now()+2).toString(),
+        type:"debit",
+        amount: "500000",
         ExecutiveId: "1",
         ClientId: "3",
       },
       {
+        no_acc:(Date.now()+3).toString(),
         type:"credit",
-        amount: "400",
+        amount: "10000",
         ExecutiveId: "1",
         ClientId: "4",
       },
       {
-        type:"credit",
-        amount: "500",
+        no_acc:(Date.now()+4).toString(),
+        type:"mortgage",
+        amount: "500000",
         ExecutiveId: "1",
         ClientId: "5",
       }
@@ -41,7 +46,7 @@ module.exports = {
   },
 
   async down (queryInterface, Sequelize) {
-    await queryInterface.bulkDelete("Acounts", null, {});
+    await queryInterface.bulkDelete("Accounts", null, {});
   }
 };
 

@@ -6,7 +6,6 @@ const validate = [
     check('total_system').not().isEmpty().isNumeric(),
     check('type').not().isEmpty(),
     check('CashboxId').not().isEmpty().isNumeric(),
-    check('ExecutiveId').not().isEmpty().isNumeric(),
     check("denominations.m10c").not().isEmpty().isNumeric(),
     check("denominations.m50c").not().isEmpty().isNumeric(),
     check("denominations.m1p").not().isEmpty().isNumeric(),

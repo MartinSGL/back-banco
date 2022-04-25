@@ -8,13 +8,9 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      inicial_amount: {
+      date:{
         allowNull: false,
-        type: Sequelize.FLOAT
-      },
-      final_amount: {
-        allowNull: false,
-        type: Sequelize.FLOAT
+        type:Sequelize.DATE,
       },
       amount: {
         allowNull: false,
@@ -45,16 +41,6 @@ module.exports = {
         type: Sequelize.INTEGER,
         references:{
           model:'Concepts',
-          key:'id'
-        },
-        onDelete:'RESTRICT',
-        onUpdate:'CASCADE'
-      },
-      CashboxeId: {
-        allowNull: false,
-        type: Sequelize.INTEGER,
-        references:{
-          model:'Cashboxes',
           key:'id'
         },
         onDelete:'RESTRICT',

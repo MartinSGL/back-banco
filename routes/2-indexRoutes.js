@@ -5,7 +5,7 @@ const areaRoutes = require('./areaRoutes')
 const commissionRoutes = require('./commissionRoutes')
 const conceptRoutes = require('./conceptRoutes')
 const denominationRoutes = require('./denominationRoutes')
-const claveRoutes = require('./claveRoutes')
+const tokenRoutes = require('./tokenRoutes')
 const clientRoutes = require('./clientRoutes')
 const cutRoutes = require('./cutRoutes')
 const creditdetailRoutes = require('./creditdetailRoutes')
@@ -13,6 +13,8 @@ const interestRoutes = require('./interestRoutes')
 const morgagesRoutes = require('./morgageRoutes')
 const accountRoutes = require('./accountRoutes')
 const cardRoutes = require('./cardRoutes')
+const transactionRoutes = require('./transactionRoutes')
+
 
 module.exports = app => {
     //login
@@ -30,7 +32,7 @@ module.exports = app => {
     //positions
     app.use(positionRoutes) 
     //clave para realizar transacciones
-    app.use(claveRoutes)
+    app.use(tokenRoutes)
     //clients
     app.use(clientRoutes)
     //cuts
@@ -45,4 +47,6 @@ module.exports = app => {
     app.use(accountRoutes)
     //cards
     app.use(cardRoutes)
+    //transactions
+    app.use(transactionRoutes)
 }

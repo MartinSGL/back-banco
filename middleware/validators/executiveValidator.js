@@ -17,7 +17,7 @@ const validateC = [
     }),
     
     check('password','Its necessary the password').isLength({min: 8}),
-    check('AreaId','Its necessary the area').not().isEmpty(),
+    check('AreaId','Its necessary the area').not().isEmpty().isNumeric(),
     
     (req,res,next)=>{
         validator(req,res,next)
@@ -39,7 +39,7 @@ const validateU = [
         }catch(error){
         }
     }),
-    check('AreaId','Its necessary the area').not().isEmpty(),
+    check('AreaId','Its necessary the area').not().isEmpty().isNumeric(),
     
     (req,res,next)=>{
         validator(req,res,next)
