@@ -1,5 +1,5 @@
 'use strict';
-require("dotenv").config();
+require("dotenv").config()
 const executive = require('../models').Executive
 const branch = require('../models').Branch
 const area = require('../models').Area
@@ -10,7 +10,7 @@ module.exports = {
       let executives = [
           {
             name:process.env.NAME_USER,
-            lastname:proccess.env.LASTNAME_USER,
+            lastname:process.env.LASTNAME_USER,
             userid:process.env.USERID_USER,
             password:process.env.PASSWORD_USER,
             AreaId:areaF.id,
