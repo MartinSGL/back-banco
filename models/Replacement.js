@@ -15,7 +15,6 @@ module.exports = (sequelize, DataTypes) => {
   }
   Replacement.init(
     {
-      date: DataTypes.DATE,
       CardId: DataTypes.INTEGER,
       reason: {
         allowNull: false,

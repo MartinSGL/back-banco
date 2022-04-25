@@ -49,7 +49,6 @@ module.exports = {
              await replacements.create(
                {
                  CardId: cardNew.id,
-                 date: Date.now(),
                  reason: req.body.replacement.reason,
                },
                { transaction: t }
