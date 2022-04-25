@@ -1,4 +1,5 @@
 'use strict';
+require("dotenv").config();
 const executive = require('../models').Executive
 const branch = require('../models').Branch
 const area = require('../models').Area
@@ -8,10 +9,10 @@ module.exports = {
     let areaF = await area.findOne({where:{name:'manager-module'}})
       let executives = [
           {
-            name:"Manuel Alejando",
-            lastname:"Barba Gonzalez",
-            userid:"manuel",
-            password:"12345678",
+            name:process.env.NAME_USER,
+            lastname:proccess.env.LASTNAME_USER,
+            userid:process.env.USERID_USER,
+            password:process.env.PASSWORD_USER,
             AreaId:areaF.id,
         },
       ]
