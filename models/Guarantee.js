@@ -11,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       Guarantee.belongsTo(models.Mortgage)
-      Guarantee.hasMany(models.Propertie)
+      Guarantee.hasMany(models.Property)
     }
   }
   Guarantee.init({

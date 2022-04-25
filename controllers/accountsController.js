@@ -5,7 +5,7 @@ const cards = require("../models").Card;
 const creditdetails = require("../models").AccountCreditdetail;
 const guarantees = require("../models").Guarantee;
 const mortgages = require("../models").Mortgage;
-const properties = require("../models").Propertie;
+const properties = require("../models").Property;
 
 const { Op } = require("sequelize");
 

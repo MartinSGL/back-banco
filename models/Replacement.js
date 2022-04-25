@@ -13,12 +13,19 @@ module.exports = (sequelize, DataTypes) => {
       Replacement.belongsTo(models.Card)
     }
   }
-  Replacement.init({
-    date: DataTypes.DATE,
-    CardId: DataTypes.INTEGER
-  }, {
-    sequelize,
-    modelName: 'Replacement',
-  });
+  Replacement.init(
+    {
+      date: DataTypes.DATE,
+      CardId: DataTypes.INTEGER,
+      reason: {
+        allowNull: false,
+        type: DataTypes.ENUM("stoled", "expired", "damaged", "lost"),
+      }
+    },
+    {
+      sequelize,
+      modelName: "Replacement",
+    }
+  );
   return Replacement;
 };

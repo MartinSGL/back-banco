@@ -12,6 +12,7 @@ const creditdetailRoutes = require('./creditdetailRoutes')
 const interestRoutes = require('./interestRoutes')
 const morgagesRoutes = require('./morgageRoutes')
 const accountRoutes = require('./accountRoutes')
+const cardRoutes = require('./cardRoutes')
 
 module.exports = app => {
     //login
@@ -42,5 +43,6 @@ module.exports = app => {
     app.use(morgagesRoutes)
     //accounts
     app.use(accountRoutes)
-
+    //cards
+    app.use(cardRoutes)
 }
