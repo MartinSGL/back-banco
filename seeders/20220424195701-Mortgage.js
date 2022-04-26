@@ -4,7 +4,7 @@ module.exports = {
   async up (queryInterface, Sequelize) {
     
     await mortgage.create({
-      solcited_date:new Date(),
+      solicited_date:new Date(),
       aproved_date:new Date(),
       solicited_amount:500000,
       aproved_amount:500000,
