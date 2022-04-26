@@ -2,7 +2,7 @@
 const concept = require('../models').Concept
 module.exports = {
   async up (queryInterface, Sequelize) {
-    await concept.bulkCreate([{name:'withdraw'},{name:'deposit'},{name:'payment'}]) 
+    await concept.bulkCreate([{name:'withdraw'},{name:'deposit'},{name:'payment'},{name:'opening'}]) 
   },
 
   async down (queryInterface, Sequelize) {

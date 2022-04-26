@@ -11,32 +11,18 @@ module.exports = {
         ClientId: "1",
       },
       {
-        no_acc:(Date.now()+1).toString(),
-        type:"debit",
-        amount: "30000",
-        ExecutiveId: "1",
-        ClientId: "2",
-      },
-      {
-        no_acc:(Date.now()+2).toString(),
-        type:"debit",
-        amount: "500000",
-        ExecutiveId: "1",
-        ClientId: "3",
-      },
-      {
         no_acc:(Date.now()+3).toString(),
         type:"credit",
         amount: "10000",
         ExecutiveId: "1",
-        ClientId: "4",
+        ClientId: "2",
       },
       {
         no_acc:(Date.now()+4).toString(),
         type:"mortgage",
         amount: "500000",
         ExecutiveId: "1",
-        ClientId: "5",
+        ClientId: "3",
       }
     ]
 
