@@ -1,4 +1,4 @@
-//modelos requerido
+//modelo requerido
 const transaction = require('../models').Transaction
 const card = require('../models').Card
 const account = require('../models').Account
@@ -6,7 +6,7 @@ const commission = require('../models').Commission
 const creditdetail = require('../models').Creditdetail
 const mortgage = require('../models').Mortgage
 const interest = require('../models').Interest
-const conceptModel = require('../models').Concept
+const concept_m = require('../models').Concept
 const client = require('../models').Client
 //resOk pide dos parametros (data y nombre del modelo)
 //resError pide dos parametros (error y data)
@@ -23,10 +23,10 @@ module.exports = {
     async index(req,res){
         try{
             let data = await transaction.findAll({
-                attributes:['id','amount','date'],include:[
-                    {model:conceptModel,attributes:['name']},
+                attributes:['id','amount'],include:[
+                    {model:concept,attributes:['name']},
                     {model:card,attributes:['card_number'],include:[
-                        {model:account,attributes:['no_acc','type']}
+                        {model:account,attributes:['no_acc','amount']}
                     ]}]}) //buscar todos los registros con deletedAt = null
             //si no encuentra ningun registro regresar un estatus OK (200), data en null y nombre del modelo
             if(data===null) return res.status(OK).json(resOk(null)) 
@@ -39,7 +39,7 @@ module.exports = {
     async create(req,res){
         try{
             
-            let {card_no,nip,amount,concept,date } = req.body; 
+            let {card_no,nip,amount,concept,date } = req.body; // obtener el token destructurado del body enviado por la URL
             let data, message='';
 
             if(concept===1){
@@ -50,12 +50,12 @@ module.exports = {
                 message = 'invalid card number'
             }
             
-            if(!data) return res.status(OK).json(resOk(message));
+            if(!data) return res.status(NOT_FOUND).json(resError(message));
             let id_v = data.Account.id, amount_v=data.Account.amount,type_v=data.Account.type, id_card=data.id
            
             const {id} = req.session
             let commissionF = await commission.findOne({})
-            let conceptF = await conceptModel.findOne({where:{id:concept}})
+            let conceptF = await concept_m.findOne({where:{id:concept}})
 
             let textMail = 
             "Hi " + data.Account.Client.name +" "+data.Account.Client.lastname +"."+
