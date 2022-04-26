@@ -14,12 +14,20 @@ module.exports = {
             userid:process.env.USERID_USER,
             password:process.env.PASSWORD_USER,
             AreaId:areaF.id,
+        },{
+            name:'Alex Salvador',
+            lastname:'Jose reyes',
+            userid:'alex',
+            password:'12345678',
+            AreaId:4,
         },
       ]
   
       let branchF = await branch.findOne({where:{name:branch_name}})
-      let executiveC = await executive.create(executives[0])
-      let executiveBranch = await executiveC.addBranch(branchF,{through:{date_init: '2022-04-08'}})               
+      let executiveM = await executive.create(executives[0])
+      let executiveC = await executive.create(executives[1])
+      let executiveBranchM = await executiveM.addBranch(branchF,{through:{date_init: '2022-04-08'}})               
+      let executiveBranchC = await executiveC.addBranch(branchF,{through:{date_init: '2022-04-08'}})               
     
   },
 
