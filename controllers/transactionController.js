@@ -49,7 +49,6 @@ module.exports = {
                 data = await  card.findOne({where:{card_number:card_no},include:[{model:account,include:[{model:client}]}]})
                 message = 'invalid card number'
             }
-            
             if(!data) return res.status(NOT_FOUND).json(resError(message));
             let id_v = data.Account.id, amount_v=data.Account.amount,type_v=data.Account.type, id_card=data.id
            
