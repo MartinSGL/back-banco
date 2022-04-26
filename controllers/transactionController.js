@@ -6,7 +6,7 @@ const commission = require('../models').Commission
 const creditdetail = require('../models').Creditdetail
 const mortgage = require('../models').Mortgage
 const interest = require('../models').Interest
-const concept_m = require('../models').Concept
+const conceptModel = require('../models').Concept
 const client = require('../models').Client
 //resOk pide dos parametros (data y nombre del modelo)
 //resError pide dos parametros (error y data)
@@ -24,7 +24,7 @@ module.exports = {
         try{
             let data = await transaction.findAll({
                 attributes:['id','amount'],include:[
-                    {model:concept,attributes:['name']},
+                    {model:conceptModel,attributes:['name']},
                     {model:card,attributes:['card_number'],include:[
                         {model:account,attributes:['no_acc','amount']}
                     ]}]}) //buscar todos los registros con deletedAt = null
@@ -55,7 +55,7 @@ module.exports = {
            
             const {id} = req.session
             let commissionF = await commission.findOne({})
-            let conceptF = await concept_m.findOne({where:{id:concept}})
+            let conceptF = await conceptModel.findOne({where:{id:concept}})
 
             let textMail = 
             "Hi " + data.Account.Client.name +" "+data.Account.Client.lastname +"."+
