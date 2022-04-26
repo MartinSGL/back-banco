@@ -50,7 +50,7 @@ module.exports = {
                 message = 'invalid card number'
             }
             
-            if(!data) return res.status(NOT_FOUND).json(resError(message, null));
+            if(!data) return res.status(OK).json(resOk(message));
             let id_v = data.Account.id, amount_v=data.Account.amount,type_v=data.Account.type, id_card=data.id
            
             const {id} = req.session
