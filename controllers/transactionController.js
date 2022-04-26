@@ -23,10 +23,10 @@ module.exports = {
     async index(req,res){
         try{
             let data = await transaction.findAll({
-                attributes:['id','amount'],include:[
+                attributes:['id','amount','date'],include:[
                     {model:conceptModel,attributes:['name']},
                     {model:card,attributes:['card_number'],include:[
-                        {model:account,attributes:['no_acc','amount']}
+                        {model:account,attributes:['no_acc','type']}
                     ]}]}) //buscar todos los registros con deletedAt = null
             //si no encuentra ningun registro regresar un estatus OK (200), data en null y nombre del modelo
             if(data===null) return res.status(OK).json(resOk(null)) 
