@@ -12,7 +12,7 @@ const {PATH_V1} = require('./1-paths')
 //anomalies
 router.get(`${PATH_V1}/commissions/`,validateToken,index)
 router.post(`${PATH_V1}/commissions/`,[validateToken,validate],create)
-router.put(`${PATH_V1}/commissions/:id`,[validateToken,validate],update)
-router.delete(`${PATH_V1}/commissions/:id`,validateToken,destroy)
+// router.put(`${PATH_V1}/commissions/:id`,[validateToken,validate],update)
+// router.delete(`${PATH_V1}/commissions/:id`,validateToken,destroy)
 
 module.exports = router
