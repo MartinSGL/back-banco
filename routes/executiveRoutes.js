@@ -5,6 +5,7 @@ const {validateC,validateU} = require('../middleware/validators/executiveValidat
 const validateToken = require('../middleware/validateToken')
 const {PATH_V1} = require('./1-paths');
 
+//executives
 router.get(`${PATH_V1}/executives`,validateToken,index);
 router.post(`${PATH_V1}/executives`,[validateToken,validateC],create);
 router.get(`${PATH_V1}/executives/:id`,validateToken,show);

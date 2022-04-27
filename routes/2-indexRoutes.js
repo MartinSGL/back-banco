@@ -14,6 +14,7 @@ const morgagesRoutes = require('./morgageRoutes')
 const accountRoutes = require('./accountRoutes')
 const cardRoutes = require('./cardRoutes')
 const transactionRoutes = require('./transactionRoutes')
+const cashboxRoutes = require('./cashboxRoutes')
 
 
 module.exports = app => {
@@ -49,4 +50,6 @@ module.exports = app => {
     app.use(cardRoutes)
     //transactions
     app.use(transactionRoutes)
+    //transactions
+    app.use(cashboxRoutes)
 }

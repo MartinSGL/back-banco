@@ -6,7 +6,7 @@ const validateToken = require('../middleware/validateToken');
 const {PATH_V1} = require('./1-paths');
 
 
-//codigo
+//interest
 router.get(`${PATH_V1}/interests`,validateToken,index);
 router.post(`${PATH_V1}/interests`,[validateToken,validate],create);
 router.put(`${PATH_V1}/interests/:id`,[validateToken,validate],update);

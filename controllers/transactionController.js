@@ -71,13 +71,17 @@ module.exports = {
                 subjectC: "Transactions Informations",
                 textC: textMail
             }
-               
+            
+            //validar si existe una transaccion de tipo opening
+            let transaction_opening = await transaction.findAll({where:{CardId:data.id}})
+            
             if(concept===1){
-                if(type_v!=='debit') return res.status(UNAUTHORIZED).json(resError('Invalid type of account'))
+                if(transaction_opening.length===0)  return res.status(UNAUTHORIZED).send(resError('it must be an opnening transaction first'))
+                if(type_v!=='debit') return res.status(UNAUTHORIZED).json(resError('Invalid type of account, it must be a debit'))
                 let amount_withdraw = amount + amount*commissionF.amount, 
                 amount_final = amount_v - amount_withdraw
                 //validar si se tiene el dinero necesario para retirar
-                if(amount_withdraw > amount_v) return res.status(UNAUTHORIZED).json(resError('Invalid amount'))
+                if(amount_withdraw > amount_v) return res.status(UNAUTHORIZED).json(resError('insuficient funds'))
                 //iniciar transaccion
                 await sequelize.transaction(async (t) => {
                     let transaccion = await transaction.create(
@@ -100,7 +104,9 @@ module.exports = {
                     return res.status(OK).json(resOk(withdraw))
                 })
             }else if(concept===2){
-                if(type_v!=='debit') return res.status(UNAUTHORIZED).json(resError('Invalid type of account'))
+                if(transaction_opening.length===0)  return res.status(UNAUTHORIZED).send(resError('it must be an opnening transaction first'))
+
+                if(type_v!=='debit') return res.status(UNAUTHORIZED).json(resError('Invalid type of account, it must be a debit'))
                 let amount_deposit = amount - amount*commissionF.amount,
                     amount_final = amount_v + amount_deposit
 
@@ -126,14 +132,15 @@ module.exports = {
                 })      
 
             }else if(concept===3){
-                if(!(type_v==='credit' || type_v==='mortgage')) return res.status(UNAUTHORIZED).json(resError('Invalid type of account'))
+                if(transaction_opening.length===0)  return res.status(UNAUTHORIZED).send(resError('it must be an opnening transaction first'))
+                if(!(type_v==='credit' || type_v==='mortgage')) return res.status(UNAUTHORIZED).json(resError('Invalid type of account, it must be a credit or mortgage'))
                 let interests = 0
                 if(type_v==='credit'){
                     let accountF = await account.findOne({include:[{model:creditdetail}],where:{id:id_v}})
                     interests = accountF.Creditdetails[0].interest
                 }else{
                     let accountF = await account.findOne({include:[{model:mortgage,include:[{model:interest}]}],where:{id:id_v}})
-                    interests = accountF.Mortgage.Interest.interet
+                    interests = accountF.Mortgage.Interest.interest
                 }
                 let amount_commission = amount*commissionF.amount,
                     amount_interest = amount*interests, 
@@ -160,8 +167,7 @@ module.exports = {
                 })
                 
             }else if(concept===4){
-                let transactionMade = await transaction.findAll({where:{CardId:data.id}})
-                if(transactionMade.length>0)  return res.status(VALIDATION).send(resError('invalid transaction'))
+                if(transaction_opening.length>0)  return res.status(UNAUTHORIZED).send(resError('there is a opnening transaction already'))
                 let transaccion = await transaction.create(
                     {
                         amount,
@@ -185,7 +191,7 @@ module.exports = {
         try{
              let {card_s} = req.params
             data = await card.findOne({where:{card_number:card_s},
-                attributes:['card_number'],include:[{model:account, attributes:['no_acc'], include:[{model:client, attributes:['name','lastname','curp']}]}]
+                attributes:['card_number'],include:[{model:account, attributes:['no_acc','type'], include:[{model:client, attributes:['name','lastname','curp']}]}]
             })
 
             return res.status(OK).json(resOk(data))

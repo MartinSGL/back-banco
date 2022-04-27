@@ -1,16 +1,18 @@
 const express = require('express')
 const router = express.Router()
+
+//aqui va el codigo
 //funciones del controlador
-const {create,validateT} = require('../controllers/tokenController')
+const {index} = require('../controllers/cashboxController')
 //funcion para validar campos
-const {validate} = require('../middleware/validators/tokenValidator')
+// const {ValidateDebit, updateValidate} = require('../middleware/validators/clientValidator')
 //verificar el token de inicio de sesion
 const validateToken = require('../middleware/validateToken')
 //ruta version 1
 const {PATH_V1} = require('./1-paths')
 
-//token
-router.post(`${PATH_V1}/tokens/`,[validateToken,validate],create)
+//cashbox
+router.get(`${PATH_V1}/cashboxes/`, [validateToken], index);
 
 
 module.exports = router

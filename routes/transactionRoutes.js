@@ -10,7 +10,7 @@ const validateTokenTransaction = require('../middleware/validateTokenTransaction
 //ruta version 1
 const {PATH_V1} = require('./1-paths')
 
-//anomalies
+//transaction
 router.get(`${PATH_V1}/transactions/`,validateToken,index)
 router.post(`${PATH_V1}/transactions/`,[validateToken,validate],create)
 router.get(`${PATH_V1}/transactions/client/:card_s`,validateToken,searchByCard)

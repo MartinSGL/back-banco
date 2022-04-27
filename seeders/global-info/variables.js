@@ -6,7 +6,6 @@ const global_var = {
     area_executive_1:'accounts',
     area_executive_2:'credits',
     area_cashier_1:'boxes',
-    area_cashier_2:'customer services',
     branch_name:'Zapopan-Andares'
 }
 

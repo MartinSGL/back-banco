@@ -3,7 +3,6 @@ const {validator} = require('../../helpers/validator')
 
 const validate = [
     check('total_cut').not().isEmpty().isNumeric(),
-    check('total_system').not().isEmpty().isNumeric(),
     check('type').not().isEmpty(),
     check('CashboxId').not().isEmpty().isNumeric(),
     check("denominations.m10c").not().isEmpty().isNumeric(),

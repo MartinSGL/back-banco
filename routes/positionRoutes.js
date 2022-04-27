@@ -9,7 +9,7 @@ const validateToken = require('../middleware/validateToken')
 //ruta version 1
 const {PATH_V1} = require('./1-paths')
 
-//anomalies
+//position
 router.get(`${PATH_V1}/positions/`,validateToken,index)
 router.post(`${PATH_V1}/positions/`,[validateToken,validate],create)
 router.put(`${PATH_V1}/positions/:id`,[validateToken,validate],update)

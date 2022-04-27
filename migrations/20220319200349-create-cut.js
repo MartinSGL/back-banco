@@ -12,10 +12,6 @@ module.exports = {
         allowNull: false,
         type: Sequelize.FLOAT
       },
-      total_system: {
-        allowNull: false,
-        type: Sequelize.FLOAT,
-      },
       type: {
         allowNull: false,
         type: Sequelize.ENUM("inital","final","especial")
