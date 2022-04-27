@@ -1,75 +1,135 @@
 const {check} = require('express-validator')
 const {validator} = require('../../helpers/validator')
 
-const validateDebit =[
-    
+const { buildCheckFunction } = require("express-validator");
+const checkBody = buildCheckFunction(["body"]);
 
-    check('account.type').not().isEmpty(),
+
+
+const validateDebit =[
+
     check('account.amount').not().isEmpty(),
 
-    check('beneficiary.*.name').not().isEmpty(),
-    check('beneficiary.*.lastname').not().isEmpty(),
-    check('beneficiary.*.relation').not().isEmpty(),
-    check('beneficiary.*.percentage').not().isEmpty().isNumeric({min: 33, max: 100}),
-    check('beneficiary.*.birth_date').not().isEmpty(),
-    check('beneficiary.*.phone').not().isEmpty().isNumeric().isLength({min: 10, max: 12}),
+    check('beneficiaries.*.name').not().isEmpty(),
+    check('beneficiaries.*.lastname').not().isEmpty(),
+    check('beneficiaries.*.relation').not().isEmpty(),
+    check('beneficiaries.*.percentage').not().isEmpty().isNumeric({min: 33, max: 100}),
+    //percentage can't sum grater than 100
+    check('beneficiaries').custom((req)=>{
+        let percentage = 0
+        let beneficiaries = req
+        beneficiaries.forEach(element => {
+            
+            percentage += parseInt(element.percentage)
+        });
+        if(percentage > 100){
+            throw new Error('The percentage can not be greater than 100')
+        }
+        return true
+    }),
+    check('beneficiaries.*.birth_date').not().isEmpty(),
+    check('beneficiaries.*.phone').not().isEmpty().isNumeric().isLength({min: 10, max: 12}),
 
-    check('document.*.document_url').not().isEmpty(),
-    check('document.*.type').not().isEmpty(),
-
-    check('card.nip').not().isEmpty(),
+    //check that there are 3 documents in the array
+    check('documents').not().isEmpty().isArray({min: 3, max: 3}),
+    //check that they all have different types and the types must be ine, address, income
+    check('documents').not().isEmpty().custom((req)=>{
+        let types = []
+        req.forEach(element => {
+            types.push(element.type)
+        });
+        if(types.length == 3){
+            if(types.includes('ine') && types.includes('address') && types.includes('income')){
+                return true
+            }
+        }
+        throw new Error('The documents must be ine, address, income')
+    }),
+    check('documents.*.document_url').not().isEmpty(),
+    check('documents.*.type').not().isEmpty(),
  
     (req,res,next)=>{
         validator(req,res,next)
     }
 ]
 const validateCredit =[
-    
 
-    check('account.type').not().isEmpty(),
     check('account.amount').not().isEmpty(),
 
-    check('accountcredentials.CredentialId').not().isEmpty(),
-    check('accountcredentials.AccountId').not().isEmpty(),
-
-    check('document.*.document_url').not().isEmpty(),
-    check('document.*.type').not().isEmpty(),
-
-    check('card.nip').not().isEmpty(),
+    check('documents').not().isEmpty().custom((req)=>{
+        let types = []
+        req.forEach(element => {
+            types.push(element.type)
+        });
+        if(types.length == 3){
+            if(types.includes('ine') && types.includes('address') && types.includes('income')){
+                return true
+            }
+        }
+        throw new Error('The documents must be ine, address, income')
+    }),
+    check('documents.*.document_url').not().isEmpty(),
+    check('documents.*.type').not().isEmpty(),
  
     (req,res,next)=>{
         validator(req,res,next)
     }
 ]
 
-const validateMortgage =[
-    
+const validateMortgage = [
+  check("account.amount").not().isEmpty(),
 
-    check('account.type').not().isEmpty(),
-    check('account.amount').not().isEmpty(),
+  check("mortgage.solicited_date").not().isEmpty(),
+  check("mortgage.solicited_amount").not().isEmpty(),
+  check("mortgage.InterestId").not().isEmpty(),
 
-    check('card.nip').not().isEmpty(),
+  check("guarantees").isArray({ min: 1, max: 3 }),
+  check("guarantees.*.name").not().isEmpty(),
+  check("guarantees.*.lastname").not().isEmpty(),
+  check("guarantees.*.address").not().isEmpty(),
+  check("guarantees.*.telephone")
+    .not()
+    .isEmpty()
+    .isNumeric()
+    .isLength({ min: 10, max: 12 }),
 
-    check('mortgage.solicited_date').not().isEmpty(),
-    check('aproved_date').not().isEmpty(),
-    check('mortgage.solicited_amount').not().isEmpty(),
-    check('mortgage.aproved_amount').not().isEmpty(),
-    check('mortgage.InterestId').not().isEmpty(),
-    check('mortgage.AccountId').not().isEmpty(),
-    
-    check('guarantees.*.name').not().isEmpty(),
-    check('guarantees.*.lastname').not().isEmpty(),
-    check('guarantees.*.address').not().isEmpty(),
-    check('guarantees.*.telephone').not().isEmpty().isNumeric().isLength({min: 10, max: 10}),
-    check('guarantees.*.MortgageId').not().isEmpty(),
+  //check that properties array are the same elements as guarantees array
+  checkBody()
+    .not()
+    .isEmpty()
+    .custom((req) => {
+        
+      let properties = (req.properties).map((m) => {
+        return Object.values(m);
+      });
 
-    check('properties.*.url').not().isEmpty(),
-    check('properties.*.value').not().isEmpty(),
-    check('properties.*.GuaranteeId').not().isEmpty(),
+      let guarantees = (req.guarantees).map((m) => {
+        return Object.values(m);
+      });
+      
+      if (properties.length == guarantees.length) {
+        return true;
+      }
+      throw new Error("The properties must be the same elements as guarantees");
+    }),
 
-    (req,res,next)=>{
-        validator(req,res,next)
-    }
+  check("properties.*.url").not().isEmpty(),
+  check("properties.*.value").not().isEmpty(),
+
+  (req, res, next) => {
+    validator(req, res, next);
+  },
+];
+
+const updateValidate = [
+  check('amount').not().isEmpty(),
+
+  (req,res,next)=>{
+      validator(req,res,next)
+  }
 ]
 
-module.exports = {validateDebit, validateCredit, validateMortgage}
+
+
+
+module.exports = {validateDebit, validateCredit, validateMortgage,updateValidate}
