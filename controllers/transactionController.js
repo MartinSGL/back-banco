@@ -6,25 +6,27 @@ const commission = require('../models').Commission
 const creditdetail = require('../models').Creditdetail
 const mortgage = require('../models').Mortgage
 const interest = require('../models').Interest
-const concept = require('../models').Concept
+const conceptModel = require('../models').Concept
+const client = require('../models').Client
 //resOk pide dos parametros (data y nombre del modelo)
 //resError pide dos parametros (error y data)
 const {resOk,resError} = require('../helpers/responses')
 //revisar el helper para ver el numero de estatus
 const {OK,ERROR,UNAUTHORIZED,VALIDATION,NOT_FOUND} = require('../helpers/status')
 const {sequelize} = require('../models');
+//helper mailer
+const mailer = require('../helpers/mailer')
 
 const modelName = 'Transaction'
 
 module.exports = {
     async index(req,res){
-        console.log('entro a index')
         try{
             let data = await transaction.findAll({
-                attributes:['id','amount'],include:[
-                    {model:concept,attributes:['name']},
+                attributes:['id','amount','date'],include:[
+                    {model:conceptModel,attributes:['name']},
                     {model:card,attributes:['card_number'],include:[
-                        {model:account,attributes:['no_acc','amount']}
+                        {model:account,attributes:['no_acc','type']}
                     ]}]}) //buscar todos los registros con deletedAt = null
             //si no encuentra ningun registro regresar un estatus OK (200), data en null y nombre del modelo
             if(data===null) return res.status(OK).json(resOk(null)) 
@@ -35,20 +37,51 @@ module.exports = {
         }
     },
     async create(req,res){
-        console.log('entro a create')
         try{
-            const {card_no,nip,amount,concept,date} = req.body
-            const {id_v,no_acc_v,amount_v,type_v,id_card} = req.account
+            
+            let {card_no,nip,amount,concept,date } = req.body; // obtener el token destructurado del body enviado por la URL
+            let data, message='';
+
+            if(concept===1){
+                data = await  card.findOne({where:{card_number:card_no,nip:nip},include:[{model:account,include:[{model:client}]}]})
+                message = 'invalid card number or nip'
+            }else{
+                data = await  card.findOne({where:{card_number:card_no},include:[{model:account,include:[{model:client}]}]})
+                message = 'invalid card number'
+            }
+            if(!data) return res.status(NOT_FOUND).json(resError(message));
+            let id_v = data.Account.id, amount_v=data.Account.amount,type_v=data.Account.type, id_card=data.id
+           
             const {id} = req.session
             let commissionF = await commission.findOne({})
+            let conceptF = await conceptModel.findOne({where:{id:concept}})
+
+            let textMail = 
+            "Hi " + data.Account.Client.name +" "+data.Account.Client.lastname +"."+
+            " A transactions was made from your account \n" +
+            "\n" +
+            "account number: " + data.Account.no_acc +"\n" +
+            "card number: " + data.card_number + "\n" +
+            "type of transaction: " + conceptF.name + "\n" +
+            "ammount: " + amount + "\n" +
+            "If this is a mistake, please contact us"
+
+            let mailerOptions = {
+                emailC: data.Account.Client.email,
+                subjectC: "Transactions Informations",
+                textC: textMail
+            }
+            
+            //validar si existe una transaccion de tipo opening
+            let transaction_opening = await transaction.findAll({where:{CardId:data.id}})
             
             if(concept===1){
-                if(type_v!=='debit') return res.status(UNAUTHORIZED).json(resError('Invalid type of account'))
+                if(transaction_opening.length===0)  return res.status(UNAUTHORIZED).send(resError('it must be an opnening transaction first'))
+                if(type_v!=='debit') return res.status(UNAUTHORIZED).json(resError('Invalid type of account, it must be a debit'))
                 let amount_withdraw = amount + amount*commissionF.amount, 
                 amount_final = amount_v - amount_withdraw
                 //validar si se tiene el dinero necesario para retirar
-                console.log(amount_withdraw)
-                if(amount_withdraw > amount_v) return res.status(UNAUTHORIZED).json(resError('Invalid amount'))
+                if(amount_withdraw > amount_v) return res.status(UNAUTHORIZED).json(resError('insuficient funds'))
                 //iniciar transaccion
                 await sequelize.transaction(async (t) => {
                     let transaccion = await transaction.create(
@@ -64,10 +97,16 @@ module.exports = {
                     let [,withdraw] = await account.update({amount:amount_final},
                         {where:{id:id_v},returning:true,plain:true},
                         {transaction:t})
+                    
+                    if(withdraw){
+                        mailer(mailerOptions)
+                    }
                     return res.status(OK).json(resOk(withdraw))
                 })
             }else if(concept===2){
-                if(type_v!=='debit') return res.status(UNAUTHORIZED).json(resError('Invalid type of account'))
+                if(transaction_opening.length===0)  return res.status(UNAUTHORIZED).send(resError('it must be an opnening transaction first'))
+
+                if(type_v!=='debit') return res.status(UNAUTHORIZED).json(resError('Invalid type of account, it must be a debit'))
                 let amount_deposit = amount - amount*commissionF.amount,
                     amount_final = amount_v + amount_deposit
 
@@ -85,16 +124,20 @@ module.exports = {
                         {transaction:t})
                     let [,deposit] = await account.update({amount:amount_final},
                         {where:{id:id_v},returning:true,plain:true})
+
+                    if(deposit){
+                        mailer(mailerOptions)
+                    }
                     return res.status(OK).json(resOk(deposit))
-                })
-                    
-                
+                })      
+
             }else if(concept===3){
-                if(!(type_v==='credit' || type_v==='mortgage')) return res.status(UNAUTHORIZED).json(resError('Invalid type of account'))
+                if(transaction_opening.length===0)  return res.status(UNAUTHORIZED).send(resError('it must be an opnening transaction first'))
+                if(!(type_v==='credit' || type_v==='mortgage')) return res.status(UNAUTHORIZED).json(resError('Invalid type of account, it must be a credit or mortgage'))
                 let interests = 0
                 if(type_v==='credit'){
                     let accountF = await account.findOne({include:[{model:creditdetail}],where:{id:id_v}})
-                    interests = accountF.Creditdetail.interest
+                    interests = accountF.Creditdetails[0].interest
                 }else{
                     let accountF = await account.findOne({include:[{model:mortgage,include:[{model:interest}]}],where:{id:id_v}})
                     interests = accountF.Mortgage.Interest.interest
@@ -102,7 +145,6 @@ module.exports = {
                 let amount_commission = amount*commissionF.amount,
                     amount_interest = amount*interests, 
                     amount_final = amount_v - (amount - (amount_commission + amount_interest))
-                    console.log(amount,amount_commission,amount_interest,amount_final)
                 //iniciar transaccion
                 await sequelize.transaction(async (t) => {
                     let transaccion = await transaction.create(
@@ -117,14 +159,45 @@ module.exports = {
                         {transaction:t})
                     let [,payment] = await account.update({amount:amount_final},
                         {where:{id:id_v},returning:true,plain:true})
+                        
+                        if(payment){
+                            mailer(mailerOptions)
+                        }
                         return res.status(OK).json(resOk(payment))
                 })
                 
-            }else{
-                return res.status(VALIDATION).json(resError('invalid type of transaction'))
+            }else if(concept===4){
+                if(transaction_opening.length>0)  return res.status(UNAUTHORIZED).send(resError('there is a opnening transaction already'))
+                let transaccion = await transaction.create(
+                    {
+                        amount,
+                        date,
+                        CommissionId:commissionF.id,
+                        ConceptId:concept,
+                        ExecutiveId:id,
+                        CardId:id_card,
+                    })
+
+                    if(transaccion){
+                        mailer(mailerOptions)
+                    }
+                    return res.status(OK).json(resOk(transaccion))
             }
         }catch(error){
             return res.status(ERROR).send(resError(error))
         }
+    },
+    async searchByCard(req,res){
+        try{
+             let {card_s} = req.params
+            data = await card.findOne({where:{card_number:card_s},
+                attributes:['card_number'],include:[{model:account, attributes:['no_acc','type'], include:[{model:client, attributes:['name','lastname','curp']}]}]
+            })
+
+            return res.status(OK).json(resOk(data))
+        }catch(error){
+            return res.status(ERROR).send(resError(error))
+        }
+       
     }
 }

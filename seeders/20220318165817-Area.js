@@ -1,7 +1,7 @@
 'use strict';
 const area = require('../models').Area
 const position = require('../models').Position
-const {area_manager,area_executive_1,area_executive_2,area_cashier_1,area_cashier_2,position_1,position_2,position_3} = require('./global-info/variables')
+const {area_manager,area_executive_1,area_executive_2,area_cashier_1,position_1,position_2,position_3} = require('./global-info/variables')
 module.exports = {
   async up (queryInterface, Sequelize) {
     
@@ -13,8 +13,7 @@ module.exports = {
       {name:area_manager,PositionId:manager.id},
       {name:area_executive_1,PositionId:executive.id},
       {name:area_executive_2,PositionId:executive.id},
-      {name:area_cashier_1,PositionId:cashier.id},
-      {name:area_cashier_2,PositionId:cashier.id},
+      {name:area_cashier_1,PositionId:cashier.id}
     ]
 
     await area.bulkCreate(areas);

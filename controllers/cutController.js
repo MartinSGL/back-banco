@@ -1,4 +1,5 @@
 const cut = require('../models').Cut;
+const cashbox = require('../models').Cashbox;
 const denomination = require('../models').Denomination;
 const {sequelize} = require('../models');
 const {resOk,resError} = require('../helpers/responses')
@@ -21,7 +22,7 @@ const validate = async (denominations,total_cut)=>{
 module.exports = {
     async index(req,res){
         try{
-            const data = await cut.findAll({})
+            const data = await cut.findAll({include:[{model:cashbox}]})
             if(data.length === 0){
                 return res.status(OK).json(resOk(null))
             }
@@ -34,7 +35,7 @@ module.exports = {
     async create(req, res){
         try{
             // datos para cortes
-            let {total_cut,total_system,type,CashboxId} = req.body
+            let {total_cut,type,CashboxId} = req.body
             let ExecutiveId = req.session.id
             //m10c,m50c,m1p,m2p,m5p,m10p,m20p,b20p,b50p,b100p,b200p,b500p,b1000p ids de denominaciones
             let denominations = req.body.denominations
@@ -45,7 +46,7 @@ module.exports = {
             //iniciar transaccion
             const result = await sequelize.transaction(async (t) => {
                 //guardar los datos en la tabla pivote de cortes
-                let cutC = await cut.create({total_cut,total_system,type,CashboxId,ExecutiveId},{ transaction: t })
+                let cutC = await cut.create({total_cut,type,CashboxId,ExecutiveId},{ transaction: t })
                 for (const key in denominations) {
                     if(denominations[key]!==0) 
                     await cutC.addDenomination(key,{through:{amount: denominations[key]},transaction: t})                    
@@ -77,7 +78,7 @@ module.exports = {
             //id
             let {id} = req.params
             // datos para cortes
-            let {total_cut,total_system,type,CashboxId} = req.body
+            let {total_cut,type,CashboxId} = req.body
             //obtener el id del toekn
             let ExecutiveId = req.session.id
             //m10c,m50c,m1p,m2p,m5p,m10p,m20p,b20p,b50p,b100p,b200p,b500p,b1000p ids de denominaciones
@@ -93,7 +94,7 @@ module.exports = {
             // //iniciar transaccion
             const result = await sequelize.transaction(async (t) => {
                 //guardar los datos en la tabla pivote de cortes
-                let [,cutU] = await cut.update({total_cut,total_system,type,CashboxId,ExecutiveId},
+                let [,cutU] = await cut.update({total_cut,type,CashboxId,ExecutiveId},
                     {
                         where:{id},returning:true,plain:true
                     },

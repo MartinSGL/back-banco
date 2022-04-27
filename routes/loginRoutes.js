@@ -7,7 +7,7 @@ const {validate} = require('../middleware/validators/loginValidator')
 //ruta version 1
 const {PATH_V1} = require('./1-paths')
 
-//anomalies
+//login
 router.post(`${PATH_V1}/login/`,validate,login)
 
 
