@@ -36,11 +36,6 @@ module.exports = {
               where: {
                 id: req.params.id,
               },
-              include: [
-                {
-                  model: interest,
-                }
-              ],
             });
             if (data === null) return res.status(NOT_FOUND).json(resOk(null));
             return res.status(OK).json(resOk(data));
@@ -59,7 +54,7 @@ module.exports = {
         return res.status(NOT_FOUND).json(resOk(null, modelName));
       //actualizar los parametros enviados en req.body recuerda que para utilizar req.body sin destructurar
       //los parametros enviados se deben llamar igual en base de datos y desde el formulario enviado (name)
-      let [, data] = await mortgages.update(req.body, {
+      let [, data] = await mortgages.update({...req.body,aproved_date:Date.now()}, {
         where: { id },
         returning: true,
         plain: true,
@@ -86,7 +81,7 @@ module.exports = {
         plain: true,
       });
       //regresar estatus OK y respuesta correcta
-      return res.status(OK).json(resOk(data));
+      return res.status(OK).json(resOk("deleted"));
     } catch (error) {
       //si se comete un error mandar un status ERROR = 400
       return res.status(ERROR).json(resError(error));

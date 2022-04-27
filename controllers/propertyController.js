@@ -9,18 +9,7 @@ const {OK,ERROR,UNAUTHORIZED,VALIDATION,NOT_FOUND} = require('../helpers/status'
 const modelName = 'Property'
 
 module.exports = {
-    async index(req,res){
-        try{
-            let data = await property.findAll() //buscar todos los registros con deletedAt = null
-            //si no encuentra ningun registro regresar un estatus OK (200), data en null y nombre del modelo
-            if(data===null) return res.status(OK).json(resOk(null)) 
-            //si si encuentra registros mandardar los registros en un json
-            return res.status(OK).json(resOk(data))
-        }catch(error){
-            //si se comete un error mandar un status ERROR = 400
-            return res.status(ERROR).send(resError(error));
-        }
-    },
+    
     async create(req,res){
         try{
             //crear registro con los parametros de req.body, recuerda que para utilizar req.body sin destructurar

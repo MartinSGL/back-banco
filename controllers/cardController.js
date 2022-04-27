@@ -1,4 +1,5 @@
 const cards = require("../models").Card;
+const accounts = require("../models").Account;
 const replacements = require("../models").Replacement;
 
 const { Op } = require("sequelize");
@@ -28,42 +29,57 @@ module.exports = {
         exp_date.setFullYear(exp_date.getFullYear() + 3);
 
         let data = await cards.findOne({
-            where: { id: req.params.id }}
-        );
+          where: { id: req.params.id },
+          include: [{ model: accounts }],
+        });
+
+        console.log(data.Account.dataValues.type);
+        let cardNew;
 
         if (data === null)
           return res.status(ERROR).json(resError("Card not found"));
+        else {
+          if (data.Account.dataValues.type == "debit") {
+            cardNew = await cards.create(
+              {
+                ...req.body.card,
+                AccountId: data.AccountId,
+                ExecutiveId: req.session.id,
+                card_number: no_card,
+                expiration_date: exp_date,
+              },
+              { transaction: t }
+            );
+          } else {
+            cardNew = await cards.create(
+              {
+                AccountId: data.AccountId,
+                ExecutiveId: req.session.id,
+                card_number: no_card,
+                expiration_date: exp_date,
+              },
+              { transaction: t }
+            );
+          }
 
-        else{
-             const cardNew = await cards.create(
-               {
-                 ...req.body.card,
-                 AccountId: data.AccountId,
-                 ExecutiveId: req.session.id,
-                 card_number: no_card,
-                 expiration_date: exp_date,
-               },
-               { transaction: t }
-             );
+          await replacements.create(
+            {
+              CardId: cardNew.id,
+              reason: req.body.replacement.reason,
+            },
+            { transaction: t }
+          );
 
-             await replacements.create(
-               {
-                 CardId: cardNew.id,
-                 reason: req.body.replacement.reason,
-               },
-               { transaction: t }
-             );
+          await cards.destroy(
+            {
+              where: { id: req.params.id },
+              returning: true,
+              plain: true,
+            },
+            { transaction: t }
+          );
 
-             await cards.destroy(
-               {
-                 where: { id: req.params.id },
-                 returning: true,
-                 plain: true,
-               },
-               { transaction: t }
-             );
-
-             return res.status(OK).json(resOk("card created"));
+          return res.status(OK).json(resOk("card created"));
         }
       });
     } catch (error) {
@@ -74,14 +90,30 @@ module.exports = {
 
   async update(req, res) {
     try {
+      let dataAcc = await cards.findOne({
+        where: { id: req.params.id },
+        include: [{ model: accounts }],
+      });
 
       let nip = req.body.nip;
       console.log(nip);
-      let data = await cards.update({nip}, {
-        where: {
-          id: req.params.id,
-        },
-      });
+      let data;
+      if (dataAcc === null)
+        return res.status(ERROR).json(resError("Card not found"));
+      else {
+        if (dataAcc.Account.dataValues.type == "debit") {
+            data = await cards.update(
+            { nip },
+            {
+              where: {
+                id: req.params.id,
+              },
+            }
+          );
+        } else {
+          return res.status(ERROR).json(resError("Account is not debit"));
+        }
+      }
       //si no encuentra ningun registro regresar un estatus OK (200), data en null y nombre del modelo
       if (data === null) return res.status(OK).json(resOk(null));
       //si si encuentra registros mandardar los registros en un json
