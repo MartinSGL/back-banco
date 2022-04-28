@@ -58,7 +58,10 @@ module.exports = {
                 //guardar los datos en la tabla pivote de cortes
                 let cutC = await cut.create({total_cut,date,type,CashboxId,ExecutiveId},{ transaction: t })
                 for (const key in denominations) {
-                    if(denominations[key]!==0 || denominations[key]!=='') 
+                    if(denominations[key]===''){
+                        denominations[key]=0
+                    }
+                    if(denominations[key]!==0) 
                     await cutC.addDenomination(key,{through:{amount: denominations[key]},transaction: t})                    
                 }     
 
@@ -115,7 +118,10 @@ module.exports = {
                 let deleteC = await cutU.setDenominations([],{ransaction: t}) 
                 //guardar los datos en la tabla pivote de cortes
                 for (const key in denominations) {
-                    if(denominations[key]!==0 || denominations[key]!=='') 
+                    if(denominations[key]===''){
+                        denominations[key]=0
+                    }
+                    if(denominations[key]!==0) 
                     await cutU.addDenomination(key,{through:{amount: denominations[key]},transaction: t})                    
                 }   
 

@@ -47,8 +47,6 @@ module.exports = {
     try {
       //findAll with the registers asociated in the table roomEquipments
       let data = await clients.findAll({
-        attributes: ["id", "name", "lastname", "curp"],
-        
         include: [
           {
             attributes: ["no_acc", "type", "amount"],
