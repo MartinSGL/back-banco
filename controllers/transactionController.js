@@ -51,7 +51,8 @@ module.exports = {
     async create(req,res){
         try{
             //create register with the parameters from req.body
-            let {card_no,nip,amount,concept,date } = req.body; 
+            let {card_no,nip,amount,concept } = req.body;
+            let date = new Date() 
             let data, message='';
             //find the card with the card_no sent in req.body inclueding the account and client
             if(concept===1){
@@ -94,12 +95,13 @@ module.exports = {
                 ExecutiveId:id,
                 [Op.and]: [
                     sequelize.where(sequelize.fn('date', sequelize.col('date')), '=', date),
-                ]
+                ],
+                type:'initial'
             }})
-            if(!cashbox_validate) return res.status(UNAUTHORIZED).send(resError('there must be an opening cut brefore transactions'))
+            if(!cashbox_validate) return res.status(UNAUTHORIZED).send(resError('there must be an opening cut before transactions'))
             
             //validate if a transaction type opening exists
-            let transaction_opening = await transaction.findOne({where:{card_number:card_no,ConceptId:4}})
+            let transaction_opening = await transaction.findOne({where:{CardId:data.id,ConceptId:4}})
 
             //validar que el modulo pueda ser divido entre .10 centavos
             if(amount < 0) return res.status(UNAUTHORIZED).send(resError('invalid transactions, the amount must be positive'))
