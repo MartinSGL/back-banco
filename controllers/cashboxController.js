@@ -1,23 +1,24 @@
-//modelo requerido
+//model required
 const cashbox= require('../models').Cashbox
-//resOk pide dos parametros (data y nombre del modelo)
-//resError pide dos parametros (error y data)
+//resOk asks for two parameters (data and the model name)
+//resError asks for two parameters (error and data)
 const {resOk,resError} = require('../helpers/responses')
-//revisar el helper para ver el numero de estatus
+//status number: OK:200, ERROR:400, UNAUTHORIZED:401, VALIDATION:403,NOT_FOUND:404
 const {OK,ERROR,UNAUTHORIZED,VALIDATION,NOT_FOUND} = require('../helpers/status')
 
 const modelName = 'Cashbox'
 
 module.exports = {
+    //all registered cashboxes
     async index(req,res){
         try{
-            let data = await cashbox.findAll({}) //buscar todos los registros con deletedAt = null
-            //si no encuentra ningun registro regresar un estatus OK (200), data en null y nombre del modelo
+            let data = await cashbox.findAll({}) //find all the registres with deletedAt = null
+            //if there are any registers, return status OK (200), data null and model name
             if(data===null) return res.status(OK).json(resOk(null)) 
-            //si si encuentra registros mandardar los registros en un json
+            //if registres are found, registres in json format and status OK (200)
             return res.status(OK).json(resOk(data))
         }catch(error){
-            //si se comete un error mandar un status ERROR = 400
+            //if there are any error, send status ERROR (400)
             return res.status(ERROR).send(resError(error));
         }
     }

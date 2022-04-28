@@ -1,77 +1,81 @@
-//modelo requerido
+//model required
 const commission = require('../models').Commission
-//resOk pide dos parametros (data y nombre del modelo)
-//resError pide dos parametros (error y data)
+//resOk asks for two parameters (data and the model name)
+//resError asks for two parameters (error and data)
 const {resOk,resError} = require('../helpers/responses')
-//revisar el helper para ver el numero de estatus
+//status number: OK:200, ERROR:400, UNAUTHORIZED:401, VALIDATION:403,NOT_FOUND:404
 const {OK,ERROR,UNAUTHORIZED,VALIDATION,NOT_FOUND} = require('../helpers/status')
 
 const modelName = 'Commission'
 
 module.exports = {
+    //all registered commissions
     async index(req,res){
         try{
-            let data = await commission.findAll({}) //buscar todos los registros con deletedAt = null
-            //si no encuentra ningun registro regresar un estatus OK (200), data en null y nombre del modelo
+            let data = await commission.findAll({}) //find all the registres with deletedAt = null
+            //if there are any registers, return status OK (200), data null and model name
             if(data===null) return res.status(OK).json(resOk(null)) 
-            //si si encuentra registros mandardar los registros en un json
+            //if registres are found, registres in json format and status OK (200)
             return res.status(OK).json(resOk(data))
         }catch(error){
-            //si se comete un error mandar un status ERROR = 400
+            //if there are any error, send status ERROR (400)
             return res.status(ERROR).send(resError(error));
         }
     },
 
-    //Crear comision y eliminar las anteriores anteriores
+    //create a new commission
     async create(req,res){
         try{
+            //variable to save all of the records founded
             let data1 = await commission.findAll({});
             if (data1!=null){
+                //if there are any registres, will be soft deleted because one commission will replace the other
                 await commission.destroy({
                 where:{},returning:true,plain:true
                 });
             }
-            //crear registro con los parametros de req.body, recuerda que para utilizar req.body sin destructurar
-            //los parametros enviados se deben llamar igual en base de datos y desde el formulario enviado (name)
+            //create register with the parameters from req.body
             let data = await commission.create(req.body);
-            
+            //return status OK (200) and data created
             return res.status(OK).json(resOk(data));
         }catch(error){
-            //si se comete un error mandar un status ERROR = 400
+            //if there are any error, send status ERROR (400)
             return res.status(ERROR).send(resError(error));
         }
     },
+    // update a commission
     // async update(req,res){
     //     try{
-    //         let {id} = req.params // obtener el id destructurado del parametro enviado por la URL
-    //         let idFound = await commission.findOne({where:{id}}) //comprobar si existe el id en la base de datos
-    //         //regresar error NOT_FOUND = 404 en caso de no encontrar
+    //         let {id} = req.params // get the id from the parameter sent by URL
+    //         let idFound = await commission.findOne({where:{id}}) //prove if the id exists in the database
+    //        //return error NOT_FOUND (404) in case the id is not found
     //         if (idFound===null) return res.status(NOT_FOUND).json(resOk(null,modelName)) 
-    //         //actualizar los parametros enviados en req.body recuerda que para utilizar req.body sin destructurar
-    //         //los parametros enviados se deben llamar igual en base de datos y desde el formulario enviado (name)
+    //         //update the parameters sent in req.body remember that using req.body
     //         let [,data] = await commission.update(req.body,{
     //             where:{id},returning:true,plain:true
     //         })
-    //         //regresar estatus OK y respuesta correcta
+    //         //return status OK (200) and data updated
     //         return res.status(OK).json(resOk(data));
     //     }catch(error){
-    //         //si se comete un error mandar un status ERROR = 400
+    //         //if there are any error, send status ERROR (400)
     //         return res.status(ERROR).json(resError(error));
     //     }
     // },
+    // //delete a commission
     // async destroy(req,res){
     //     try{
-    //         let {id} = req.params // obtener el id destructurado del parametro enviado por la URL
-    //         let idFound = await commission.findOne({where:{id}}) //comprobar si existe el id en la base de datos
-    //         //regresar error NOT_FOUND = 404 en caso de no encontrar
-    //         if (idFound===null) return res.status(NOT_FOUND).json(resOk(null,modelName)) 
+    //         let {id} = req.params // get the id from the parameter sent by URL
+    //         let idFound = await commission.findOne({where:{id}}) //prove if the id exists in the database
+    //         //return error NOT_FOUND (404) in case the id is not found
+    //         if (idFound===null) return res.status(NOT_FOUND).json(resOk(null,modelName))
+    //         //delete the register with the id sent by URL 
             // let data = await commission.destroy({
             //     where:{id: id},returning:true,plain:true
             // });
-    //         //regresar estatus OK y respuesta correcta
+    //         ///return status OK (200) and data deleted
     //         return res.status(OK).json(resOk(data));
     //     }catch(error){
-    //         //si se comete un error mandar un status ERROR = 400
+    //         //if there is any error, send status ERROR (400)
     //         return res.status(ERROR).send(resOk(error));
     //     }
     // }
