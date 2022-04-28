@@ -99,7 +99,7 @@ module.exports = {
             if(!cashbox_validate) return res.status(UNAUTHORIZED).send(resError('there must be an opening cut brefore transactions'))
             
             //validate if a transaction type opening exists
-            let transaction_opening = await transaction.findOne({where:{CardId:data.id}})
+            let transaction_opening = await transaction.findOne({where:{card_number:card_no,ConceptId:4}})
 
             //validar que el modulo pueda ser divido entre .10 centavos
             if(amount < 0) return res.status(UNAUTHORIZED).send(resError('invalid transactions, the amount must be positive'))
