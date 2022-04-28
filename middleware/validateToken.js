@@ -16,6 +16,6 @@ module.exports = (req,res,next)=>{
     return next()
 
     }catch(error){
-        return res.status(UNAUTHORIZED).json(resError(error.message))
+        return res.status(500).json(resError(error.message))
     }
 }
