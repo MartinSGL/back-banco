@@ -111,6 +111,8 @@ module.exports = {
             
             if(amountStr.length>1) return res.status(UNAUTHORIZED).send(resError('invalid transactions, our minimun denominations is 10 cents'))
             
+            amount = parseFloat(amount)
+
             //if the transaction type opening is not found, return status UNAUTHORIZED (401)
             if(concept===1){
                 if(!transaction_opening)  return res.status(UNAUTHORIZED).send(resError('it must be an opening transaction first'))
