@@ -99,7 +99,7 @@ module.exports = {
             if(!cashbox_validate) return res.status(UNAUTHORIZED).send(resError('there must be an opening cut brefore transactions'))
             
             //validate if a transaction type opening exists
-            let transaction_opening = await transaction.findAll({where:{CardId:data.id}})
+            let transaction_opening = await transaction.findOne({where:{CardId:data.id}})
 
             //validar que el modulo pueda ser divido entre .10 centavos
             if(amount < 0) return res.status(UNAUTHORIZED).send(resError('invalid transactions, the amount must be positive'))
@@ -111,7 +111,7 @@ module.exports = {
             
             //if the transaction type opening is not found, return status UNAUTHORIZED (401)
             if(concept===1){
-                if(transaction_opening.length===0)  return res.status(UNAUTHORIZED).send(resError('it must be an opening transaction first'))
+                if(!transaction_opening)  return res.status(UNAUTHORIZED).send(resError('it must be an opening transaction first'))
                 if(type_v!=='debit') return res.status(UNAUTHORIZED).json(resError('Invalid type of account, it must be a debit'))
                 let amount_withdraw = amount + amount*commissionF.amount, 
                 amount_final = amount_v - amount_withdraw
@@ -141,7 +141,7 @@ module.exports = {
                 })
                 //if concept is 2, and the transaction type opening is found, return status UNAUTHORIZED (401)
             }else if(concept===2){
-                if(transaction_opening.length===0)  return res.status(UNAUTHORIZED).send(resError('it must be an opening transaction first'))
+                if(!transaction_opening)  return res.status(UNAUTHORIZED).send(resError('it must be an opening transaction first'))
                 //if the type of account is not debit, return status UNAUTHORIZED (401)
                 if(type_v!=='debit') return res.status(UNAUTHORIZED).json(resError('Invalid type of account, it must be a debit'))
                 let amount_deposit = amount - amount*commissionF.amount,
@@ -170,7 +170,7 @@ module.exports = {
 
             }else if(concept===3){
                 //if concept is 3, and the transaction type opening is found, return status UNAUTHORIZED (401)
-                if(transaction_opening.length===0)  return res.status(UNAUTHORIZED).send(resError('it must be an opnening transaction first'))
+                if(!transaction_opening)  return res.status(UNAUTHORIZED).send(resError('it must be an opnening transaction first'))
                 //if the type of account is not credit or matgage return status UNAUTHORIZED (401)
                 if(!(type_v==='credit' || type_v==='mortgage')) return res.status(UNAUTHORIZED).json(resError('Invalid type of account, it must be a credit or mortgage'))
                 let interests = 0
@@ -210,7 +210,7 @@ module.exports = {
                 
             }else if(concept===4){
                 //if concept is 4, and the transaction type opening is found, return status UNAUTHORIZED (401)
-                if(transaction_opening.length>0)  return res.status(UNAUTHORIZED).send(resError('there is a opnening transaction already'))
+                if(transaction_opening)  return res.status(UNAUTHORIZED).send(resError('there is a opnening transaction already'))
                 let transaccion = await transaction.create(
                     {
                         amount,
