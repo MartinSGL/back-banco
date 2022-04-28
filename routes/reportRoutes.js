@@ -1,0 +1,14 @@
+const express = require('express')
+const router = express.Router()
+//funciones del controlador
+const {getAccounts,getTransactions} = require('../controllers/reportController')
+//verificar el token de inicio de sesion
+const validateToken = require('../middleware/validateToken')
+//ruta version 1
+const {PATH_V1} = require('./1-paths')
+
+//anomalies
+router.get(`${PATH_V1}/reports/accounts`,validateToken,getAccounts)
+router.get(`${PATH_V1}/reports/transactions`,validateToken,getTransactions)
+
+module.exports = router

@@ -19,6 +19,7 @@ const guaranteeRoutes = require('./guaranteeRoutes')
 const beneficiaryRoutes = require('./beneficiaryRoutes')
 const propertyRoutes = require('./propertyRoutes')
 const cashboxRoutes = require('./cashboxRoutes')
+const reportRoutes = require('./reportRoutes')
 
 
 
@@ -65,4 +66,6 @@ module.exports = app => {
     app.use(propertyRoutes)
     //transactions
     app.use(cashboxRoutes)
+    //transactions
+    app.use(reportRoutes)
 }
