@@ -16,10 +16,11 @@ module.exports = (sequelize, DataTypes) => {
     }
   }
   Cut.init({
+    date: DataTypes.DATE,
     total_cut: DataTypes.FLOAT,
     type: {
       allowNull: false,
-      type: DataTypes.ENUM("inital","final","especial")
+      type: DataTypes.ENUM("initial","final")
     },
     CashboxId: DataTypes.INTEGER,
     ExecutiveId: DataTypes.INTEGER

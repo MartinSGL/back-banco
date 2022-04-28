@@ -8,13 +8,17 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
+      date:{
+        allowNull: false,
+        type: Sequelize.DATE,
+      },
       total_cut: {
         allowNull: false,
-        type: Sequelize.FLOAT
+        type: Sequelize.FLOAT,
       },
       type: {
         allowNull: false,
-        type: Sequelize.ENUM("inital","final","especial")
+        type: Sequelize.ENUM("initial","final")
       },
       CashboxId: {
         allowNull: false,

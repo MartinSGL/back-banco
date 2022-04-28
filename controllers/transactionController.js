@@ -8,12 +8,15 @@ const mortgage = require('../models').Mortgage
 const interest = require('../models').Interest
 const conceptModel = require('../models').Concept
 const client = require('../models').Client
+const cut = require('../models').Cut
 //resOk pide dos parametros (data y nombre del modelo)
 //resError pide dos parametros (error y data)
 const {resOk,resError} = require('../helpers/responses')
 //revisar el helper para ver el numero de estatus
 const {OK,ERROR,UNAUTHORIZED,VALIDATION,NOT_FOUND} = require('../helpers/status')
 const {sequelize} = require('../models');
+const { Op } = require("sequelize");
+
 //helper mailer
 const mailer = require('../helpers/mailer')
 
@@ -71,9 +74,27 @@ module.exports = {
                 subjectC: "Transactions Informations",
                 textC: textMail
             }
+
+            //validar si ya se abrio caja
+            // let onlyDate= date.toLocaleDateString() 
+            let cashbox_validate = await cut.findAll({where:{
+                ExecutiveId:id,
+                [Op.and]: [
+                    sequelize.where(sequelize.fn('date', sequelize.col('date')), '=', date),
+                ]
+            }})
+            if(cashbox_validate.lenght===0) return res.status(UNAUTHORIZED).send(resError('there must be an opening cut brefore transactions'))
             
             //validar si existe una transaccion de tipo opening
             let transaction_opening = await transaction.findAll({where:{CardId:data.id}})
+
+            //validar que el modulo pueda ser divido entre .10 centavos
+            if(amount < 0) return res.status(UNAUTHORIZED).send(resError('invalid transactions, the amount must be positive'))
+            //validar que el modulo pueda ser divido entre .10 centavos
+            let amountStr = amount.toString().split(".")[1] || 1
+            console.log(amountStr.lenght)
+            
+            if(amountStr.length>1) return res.status(UNAUTHORIZED).send(resError('invalid transactions, our minimun denominations is 10 cents'))
             
             if(concept===1){
                 if(transaction_opening.length===0)  return res.status(UNAUTHORIZED).send(resError('it must be an opnening transaction first'))
