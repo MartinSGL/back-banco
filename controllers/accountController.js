@@ -6,6 +6,7 @@ const creditdetails = require("../models").AccountCreditdetail;
 const guarantees = require("../models").Guarantee;
 const mortgages = require("../models").Mortgage;
 const properties = require("../models").Property;
+const transaction = require("../models").Transaction;
 
 const { Op } = require("sequelize");
 
@@ -20,6 +21,24 @@ const {
   VALIDATION,
   NOT_FOUND,
 } = require("../helpers/status");
+
+function createNoCard() {
+  (rand_3 = Math.ceil(Math.random() * (999 - 100) + 100).toString()),
+    (date_13 = Date.now().toString());
+  let no_card = rand_3 + date_13;
+  return no_card;
+}
+
+function createExpDate() {
+  const exp_date = new Date();
+  exp_date.setFullYear(exp_date.getFullYear() + 3);
+  return exp_date;
+}
+
+function createNoAcc() {
+  let no_acc = Date.now().toString();
+  return no_acc;
+}
 
 module.exports = {
   async createDebito(req, res) {
@@ -41,7 +60,9 @@ module.exports = {
         const account = await accounts.create(
           {
             ...req.body.account,
+            type: "debit",
             ExecutiveId: req.session.id,
+            no_acc: createNoAcc(),
           },
           { transaction: t }
         );
@@ -53,7 +74,7 @@ module.exports = {
         });
         const document = await arrayDocuments.forEach((element) => {
           documents.create(
-            { ...element},
+            { ...element, ClientId: account.ClientId },
             { transaction: t }
           );
         });
@@ -61,9 +82,9 @@ module.exports = {
           {
             ...req.body.card,
             AccountId: account.id,
-            card_number: no_card,
-            expiration_date: exp_date,
             ExecutiveId: req.session.id,
+            card_number: createNoCard(),
+            expiration_date: createExpDate(),
           },
           { transaction: t }
         );
@@ -81,24 +102,15 @@ module.exports = {
       const result = await sequelize.transaction(async (t) => {
         const arrayDocuments = req.body.documents;
 
-        let rand_3 = Math.ceil(Math.random() * (999 - 100) + 100).toString(),
-          date_13 = Date.now().toString();
-        let no_card = rand_3 + date_13;
-        console.log(no_card);
-
-        const exp_date = new Date();
-        exp_date.setFullYear(exp_date.getFullYear() + 3);
-        console.log(exp_date);
-
         const account = await accounts.create(
           {
             ...req.body.account,
-            ExecutiveId: req.session.id
+            type: "credit",
+            ExecutiveId: req.session.id,
+            no_acc: createNoAcc(),
           },
           { transaction: t }
         );
-        console.log(account.id);
-        console.log(req.body.creditdetail);
         const creditdetail = await creditdetails.create(
           { ...req.body.creditdetail, AccountId: account.id },
           { transaction: t }
@@ -111,11 +123,10 @@ module.exports = {
         });
         const card = await cards.create(
           {
-            ...req.body.card,
             AccountId: account.id,
-            card_number: no_card,
-            expiration_date: exp_date,
-            ExecutiveId: req.session.id
+            card_number: createNoCard(),
+            expiration_date: createExpDate(),
+            ExecutiveId: req.session.id,
           },
           { transaction: t }
         );
@@ -145,7 +156,9 @@ module.exports = {
         const account = await accounts.create(
           {
             ...req.body.account,
+            type: "mortgage",
             ExecutiveId: req.session.id,
+            no_acc: createNoAcc(),
           },
           { transaction: t }
         );
@@ -173,34 +186,51 @@ module.exports = {
         });
         const card = await cards.create(
           {
-            ...req.body.card,
             AccountId: account.id,
-            card_number: no_card,
-            expiration_date: exp_date,
+            card_number: createNoCard(),
+            expiration_date: createExpDate(),
             ExecutiveId: req.session.id,
           },
           { transaction: t }
         );
-        return res.status(OK).json(resOk("count created"));
+        return res.status(OK).json(resOk("acount created"));
       });
     } catch (error) {
       console.log(error);
       return res.status(400).send(error);
     }
-  }, 
+  },
   async update(req, res) {
+    console.log("Hola ", req.params.id);
     try {
-      //update the client with the id
-      let data = await accounts.update(req.body, {
+      let data = await accounts.findOne({
+        where: {
+          id: req.params.id,
+        },
+        include: [{ model: cards }],
+      });
+
+      console.log(data.Cards[0].dataValues.id);
+      //si no encuentra ningun registro regresar un estatus ERROR (200) and record not found
+      if (data === null)
+        return res.status(ERROR).json(resOk("Record not found"));
+
+      let transactionMade = await transaction.findAll({
+        where: { CardId: data.Cards[0].dataValues.id },
+      });
+
+      if (transactionMade.length > 0)
+        return res.status(VALIDATION).send(resError("invalid action"));
+
+      //update the account amount and return the updated account
+      let result = await accounts.update(req.body, {
         where: {
           id: req.params.id,
         },
       });
-      //si no encuentra ningun registro regresar un estatus OK (200), data en null y nombre del modelo
-      if (data === null) return res.status(OK).json(resOk(null));
-      //si si encuentra registros mandardar los registros en un json
-      return res.status(OK).json(resOk(data));
+      return res.status(OK).json(resOk(result));
     } catch (error) {
+      console.log("valio");
       //si se comete un error mandar un status ERROR = 400
       return res.status(ERROR).send(resError(error));
     }
@@ -209,16 +239,11 @@ module.exports = {
   async destroy(req, res) {
     try {
       //soft delete the client with the id
-      let data = await accounts.update(
-        {
-          deletedAt: new Date(),
-        },
-        {
-          where: {
-            id: req.params.id,
-          },
-        }
-      );
+      let data = await accounts.destroy({
+        where: { id: req.params.id },
+        returning: true,
+        plain: true,
+      });
       //si no encuentra ningun registro regresar un estatus OK (200), data en null y nombre del modelo
       if (data === null) return res.status(OK).json(resOk(null));
       //si si encuentra registros mandardar los registros en un json

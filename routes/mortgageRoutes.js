@@ -8,21 +8,18 @@ const {
   show,
   update,
   destroy,
-} = require("../controllers/morgageController");
+} = require("../controllers/mortgageController");
 //funcion para validar campos
-const {
-  insertValidate,
-  updateValidate,
-} = require("../middleware/validators/clientValidator");
+const {validate} = require("../middleware/validators/mortgageValidator");
 //verificar el token de inicio de sesion
 const validateToken = require("../middleware/validateToken");
 //ruta version 1
 const { PATH_V1 } = require("./1-paths");
 
 //anomalies
-router.get(`${PATH_V1}/morgages/`, index);
-router.get(`${PATH_V1}/morgages/:id`, show);
-router.put(`${PATH_V1}/morgages/:id`, update);
-router.delete(`${PATH_V1}/morgages/:id`, destroy);
+router.get(`${PATH_V1}/mortgages/`, index);
+router.get(`${PATH_V1}/mortgages/:id`, show);
+router.put(`${PATH_V1}/mortgages/:id`,validate, update);
+router.delete(`${PATH_V1}/mortgages/:id`, destroy);
 
 module.exports = router;

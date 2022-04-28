@@ -8,15 +8,22 @@ const mortgage = require('../models').Mortgage
 const interest = require('../models').Interest
 const conceptModel = require('../models').Concept
 const client = require('../models').Client
+
 //resOk asks for two parameters (data and the model name)
 //resError asks for two parameters (error and data)
+const cut = require('../models').Cut
+
 const {resOk,resError} = require('../helpers/responses')
 //status number: OK:200, ERROR:400, UNAUTHORIZED:401, VALIDATION:403,NOT_FOUND:404
 const {OK,ERROR,UNAUTHORIZED,VALIDATION,NOT_FOUND} = require('../helpers/status')
 //sequelize for made internal queries
 const {sequelize} = require('../models');
+
 //mailer helper for messages and responses
+const { Op } = require("sequelize");
 const mailer = require('../helpers/mailer')
+
+
 
 const modelName = 'Transaction'
 
@@ -80,9 +87,27 @@ module.exports = {
                 subjectC: "Transactions Informations",
                 textC: textMail
             }
+
+            //validar si ya se abrio caja
+            // let onlyDate= date.toLocaleDateString() 
+            let cashbox_validate = await cut.findAll({where:{
+                ExecutiveId:id,
+                [Op.and]: [
+                    sequelize.where(sequelize.fn('date', sequelize.col('date')), '=', date),
+                ]
+            }})
+            if(cashbox_validate.lenght===0) return res.status(UNAUTHORIZED).send(resError('there must be an opening cut brefore transactions'))
             
             //validate if a transaction type opening exists
             let transaction_opening = await transaction.findAll({where:{CardId:data.id}})
+
+            //validar que el modulo pueda ser divido entre .10 centavos
+            if(amount < 0) return res.status(UNAUTHORIZED).send(resError('invalid transactions, the amount must be positive'))
+            //validar que el modulo pueda ser divido entre .10 centavos
+            let amountStr = amount.toString().split(".")[1] || 1
+            console.log(amountStr.lenght)
+            
+            if(amountStr.length>1) return res.status(UNAUTHORIZED).send(resError('invalid transactions, our minimun denominations is 10 cents'))
             
             //if the transaction type opening is not found, return status UNAUTHORIZED (401)
             if(concept===1){

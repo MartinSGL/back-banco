@@ -10,11 +10,16 @@ const clientRoutes = require('./clientRoutes')
 const cutRoutes = require('./cutRoutes')
 const creditdetailRoutes = require('./creditdetailRoutes')
 const interestRoutes = require('./interestRoutes')
-const morgagesRoutes = require('./morgageRoutes')
+const mortgagesRoutes = require('./mortgageRoutes')
 const accountRoutes = require('./accountRoutes')
 const cardRoutes = require('./cardRoutes')
 const transactionRoutes = require('./transactionRoutes')
+const documentRoutes = require('./documentRoutes')
+const guaranteeRoutes = require('./guaranteeRoutes')
+const beneficiaryRoutes = require('./beneficiaryRoutes')
+const propertyRoutes = require('./propertyRoutes')
 const cashboxRoutes = require('./cashboxRoutes')
+
 
 
 module.exports = app => {
@@ -29,7 +34,9 @@ module.exports = app => {
     //concepts
     app.use(conceptRoutes)
     //denominations
-    app.use(denominationRoutes) 
+    app.use(denominationRoutes)
+    //documents
+    app.use(documentRoutes)
     //positions
     app.use(positionRoutes) 
     //clave para realizar transacciones
@@ -43,13 +50,19 @@ module.exports = app => {
     //creditdetails
     app.use(creditdetailRoutes)
     //morgages
-    app.use(morgagesRoutes)
+    app.use(mortgagesRoutes)
     //accounts
     app.use(accountRoutes)
     //cards
     app.use(cardRoutes)
     //transactions
     app.use(transactionRoutes)
+    //guarantees
+    app.use(guaranteeRoutes)
+    //beneficiaries
+    app.use(beneficiaryRoutes)
+    //properties
+    app.use(propertyRoutes)
     //transactions
     app.use(cashboxRoutes)
 }

@@ -3,7 +3,7 @@ const {validator} = require('../../helpers/validator')
 
 const validate = [
 
-    check('card.nip').not().isEmpty(),
+    check('nip').not().isEmpty().isNumeric().isLength({min: 4, max: 4}).withMessage('NIP must be 4 digits'),
     
     (req,res,next)=>{
         validator(req,res,next)

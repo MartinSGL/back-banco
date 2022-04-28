@@ -1,5 +1,7 @@
 //modelo requerido
 const guarantee= require('../models').Guarantee;
+const mortgage= require('../models').Mortgage;
+const property= require('../models').Property;
 //resOk pide dos parametros (data y nombre del modelo)
 //resError pide dos parametros (error y data)
 const {resOk,resError} = require('../helpers/responses')
@@ -9,27 +11,40 @@ const {OK,ERROR,UNAUTHORIZED,VALIDATION,NOT_FOUND} = require('../helpers/status'
 const modelName = 'Guarantee'
 
 module.exports = {
-    async index(req,res){
-        try{
-            let data = await guarantee.findAll() //buscar todos los registros con deletedAt = null
-            //si no encuentra ningun registro regresar un estatus OK (200), data en null y nombre del modelo
-            if(data===null) return res.status(OK).json(resOk(null)) 
-            //si si encuentra registros mandardar los registros en un json
-            return res.status(OK).json(resOk(data))
-        }catch(error){
-            //si se comete un error mandar un status ERROR = 400
-            return res.status(ERROR).send(resError(error));
-        }
-    },
     async create(req,res){
         try{
+            let mortgagedata = await mortgage.findOne({
+                where:{
+                    id:req.body.MortgageId
+                },
+                include:[{
+                    model:guarantee,
+                }]
+
+            });
+            console.log(mortgagedata.Guarantees.length)
+            if (mortgagedata.Guarantees.length > 2) {
+              return res.status(VALIDATION).json({
+                error: 'The mortgage already has 3 guarantees'
+                });
+
+            }
+
             //crear registro con los parametros de req.body, recuerda que para utilizar req.body sin destructurar
             //los parametros enviados se deben llamar igual en base de datos y desde el formulario enviado (name)
             let data = await guarantee.create(req.body);
+            await property.create({
+                url:req.body.property.url,
+                value:req.body.property.value,
+                GuaranteeId:data.id
+            });
+
+
+            
             return res.status(OK).json(resOk(data));
         }catch(err){
             //si se comete un error mandar un status ERROR = 400
-            return res.status(ERROR).send(resError(error));
+            return res.status(ERROR).send(resError(ERROR));
         }
     },
     async update(req,res){

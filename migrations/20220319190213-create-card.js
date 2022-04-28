@@ -14,7 +14,7 @@ module.exports = {
         unique: true,
       },
       nip: {
-        allowNull: false,
+        allowNull: true,
         type: Sequelize.INTEGER,
       },
       expiration_date: {
