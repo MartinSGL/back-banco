@@ -4,7 +4,7 @@ const {validator} = require('../../helpers/validator')
 const validate = [
     
     check('url').not().isEmpty(),
-    check('value').not().isEmpty(),
+    check('value').not().isEmpty().isInt(),
     
     (req,res,next)=>{
         validator(req,res,next)

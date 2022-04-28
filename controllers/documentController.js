@@ -1,6 +1,6 @@
 //modelo requerido
 const documents = require("../models").Document;
-
+const clients = require("../models").Client;
 
 //resOk pide dos parametros (data y nombre del modelo)
 //resError pide dos parametros (error y data)
@@ -17,34 +17,27 @@ const {
 const modelName = "documents";
 
 module.exports = {
-  async index(req, res) {
+  async create(req, res) {
+    let { ClientId, document_url, type } = req.body;
     try {
-      let data = await documents.findAll({}); //buscar todos los registros con deletedAt = null
-      //si no encuentra ningun registro regresar un estatus OK (200), data en null y nombre del modelo
-      if (data === null) return res.status(OK).json(resOk(null));
-      //si si encuentra registros mandardar los registros en un json
-      return res.status(OK).json(resOk(data));
-    } catch (error) {
-      //si se comete un error mandar un status ERROR = 400
-      return res.status(ERROR).send(resError(error));
-    }
-  },
-  //show by id
-  async show(req, res) {
-    try {
-      let data = await documents.findOne({
-        where: {
-          id: req.params.id,
-        }
-      });
-      if (data === null) return res.status(NOT_FOUND).json(resOk(null));
-      return res.status(OK).json(resOk(data));
-    } catch (error) {
-      //regresar estatus ERROR y respuesta incorrecta
-      return res.status(ERROR).send(resError(error));
-    }
-  },
 
+      let dataClient = await clients.findOne({ where: { id: ClientId },include:[{model:documents}]});
+      
+
+      if (dataClient === null) return res.status(NOT_FOUND).json(resOk(null));
+      // if the type in documents already exists then return error
+      if (dataClient.Documents.find(doc => doc.type === type))
+        return res.status(VALIDATION).json(resError("document repeted", modelName));
+
+
+
+      
+      let data = await documents.create({ ClientId, document_url, type });
+      return res.json(data);
+    } catch (error) {
+      return res.status(400).send(error);
+    }
+  },
   async update(req, res) {
     try {
       let { id } = req.params; // obtener el id destructurado del parametro enviado por la URL
@@ -54,7 +47,7 @@ module.exports = {
         return res.status(NOT_FOUND).json(resOk(null, modelName));
       //actualizar los parametros enviados en req.body recuerda que para utilizar req.body sin destructurar
       //los parametros enviados se deben llamar igual en base de datos y desde el formulario enviado (name)
-      let [, data] = await documents.update(req.body, {
+      let [data] = await documents.update(req.body, {
         where: { id },
         returning: true,
         plain: true,
@@ -77,11 +70,10 @@ module.exports = {
       //eliminar el registro
       let [, data] = await documents.destroy({
         where: { id },
-        returning: true,
         plain: true,
       });
       //regresar estatus OK y respuesta correcta
-      return res.status(OK).json(resOk(data));
+      return res.status(OK).json(resOk());
     } catch (error) {
       //si se comete un error mandar un status ERROR = 400
       return res.status(ERROR).json(resError(error));
