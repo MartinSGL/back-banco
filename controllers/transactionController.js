@@ -90,13 +90,13 @@ module.exports = {
 
             //validar si ya se abrio caja
             // let onlyDate= date.toLocaleDateString() 
-            let cashbox_validate = await cut.findAll({where:{
+            let cashbox_validate = await cut.findOne({where:{
                 ExecutiveId:id,
                 [Op.and]: [
                     sequelize.where(sequelize.fn('date', sequelize.col('date')), '=', date),
                 ]
             }})
-            if(cashbox_validate.lenght===0) return res.status(UNAUTHORIZED).send(resError('there must be an opening cut brefore transactions'))
+            if(!cashbox_validate) return res.status(UNAUTHORIZED).send(resError('there must be an opening cut brefore transactions'))
             
             //validate if a transaction type opening exists
             let transaction_opening = await transaction.findAll({where:{CardId:data.id}})

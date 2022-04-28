@@ -152,7 +152,7 @@ module.exports = {
     },
     async getCutInfoByExecutive(req,res){
         try {
-            let id = 2 // {id} = req.session
+            let {id}= req.session
             let date = new Date()
 
             let total_system = 0 
