@@ -31,13 +31,34 @@ module.exports = {
     //all registered transactions
     async index(req,res){
         try{
+            let {search} = req.params 
+            console.log(search,'holaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa')
             //find all the registres with deletedAt = null (include all the relations)
-            let data = await transaction.findAll({
-                attributes:['id','amount','date'],include:[
-                    {model:conceptModel,attributes:['name']},
-                    {model:card,attributes:['card_number'],include:[
-                        {model:account,attributes:['no_acc','type']}
-                    ]}]}) 
+            let data = null
+            if(search!=="inicial"){
+                data = await transaction.findAll({
+                    attributes:['id','amount','date'],include:[
+                        {model:conceptModel,attributes:['name']},
+                        {model:card,attributes:['card_number'],include:[
+                            {model:account,attributes:['no_acc','type'], 
+                            where:{
+                            no_acc: {
+                            [Op.like]: `%${search}%`,
+                        },
+                        }
+                        }
+                        ]}],
+                    },{required: true})
+            }else{
+                data = await transaction.findAll({
+                    attributes:['id','amount','date'],include:[
+                        {model:conceptModel,attributes:['name']},
+                        {model:card,attributes:['card_number'],include:[
+                            {model:account,attributes:['no_acc','type'],
+                        }
+                        ]}],
+                    },{required: true})
+            }
             //if there are any registers, return status OK (200), data null
             if(data===null) return res.status(OK).json(resOk(null)) 
             //if registres are found, registres in json format and status OK (200)
