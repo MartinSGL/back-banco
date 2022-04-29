@@ -17,7 +17,7 @@ router.get(`${PATH_V1}/clients/:id`,[validateToken],show)
 router.post(`${PATH_V1}/clients/search/`,[validateToken],search)
 router.post(`${PATH_V1}/clients/debit`,[validateToken,validateDebit],createDebito)
 router.post(`${PATH_V1}/clients/credit`,[validateToken,validateCredit],createCredito)
-router.post(`${PATH_V1}/clients/morgages`,[validateToken,validateMortgage],createMorgages)
+router.post(`${PATH_V1}/clients/mortgages`,[validateToken,validateMortgage],createMorgages)
 
 router.put(`${PATH_V1}/clients/:id`, [validateToken,updateValidate], update);
 router.delete(`${PATH_V1}/clients/:id`,destroy)
