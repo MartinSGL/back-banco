@@ -12,7 +12,7 @@ const validateToken = require('../middleware/validateToken')
 const {PATH_V1} = require('./1-paths')
 
 //anomalies
-router.get(`${PATH_V1}/clients/`, [validateToken], index);
+router.get(`${PATH_V1}/clients/index/name/:search`, [validateToken], index);
 router.get(`${PATH_V1}/clients/:id`,[validateToken],show)
 router.post(`${PATH_V1}/clients/search/`,[validateToken],search)
 router.post(`${PATH_V1}/clients/debit`,[validateToken,validateDebit],createDebito)

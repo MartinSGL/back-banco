@@ -31,8 +31,7 @@ module.exports = {
     //all registered transactions
     async index(req,res){
         try{
-            let {search} = req.params 
-            console.log(search,'holaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa')
+            let {search} = req.params
             //find all the registres with deletedAt = null (include all the relations)
             let data = null
             if(search!=="inicial"){

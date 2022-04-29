@@ -46,7 +46,25 @@ module.exports = {
   async index(req, res) {
     try {
       //findAll with the registers asociated in the table roomEquipments
-      let data = await clients.findAll({
+      let {search} = req.params
+      console.log(search)
+      let searchLower = search.toLowerCase()
+      console.log(searchLower)
+      let data = null
+      if(search!=="inicial"){
+        data = await clients.findAll({
+        include: [
+          {
+            attributes: ["no_acc", "type", "amount"],
+            model: accounts
+          }
+        ],
+        where:sequelize.where(sequelize.fn("concat", sequelize.fn('lower',sequelize.col("name")), sequelize.fn('lower',sequelize.col("lastname"))), {
+          [Op.like]: `%${searchLower}%`,
+        })
+      });
+    }else{
+      data = await clients.findAll({
         include: [
           {
             attributes: ["no_acc", "type", "amount"],
@@ -54,6 +72,7 @@ module.exports = {
           }
         ],
       });
+    }
       //si no encuentra ningun registro regresar un estatus OK (200), data en null y nombre del modelo
       if (data === null) return res.status(OK).json(resOk(null));
       //si si encuentra registros mandardar los registros en un json
