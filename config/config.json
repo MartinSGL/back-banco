@@ -1,7 +1,7 @@
 {
     "development": {
       "username": "postgres",
-      "password": "abc123",
+      "password": "akame123",
       "database": "bantexico",
       "host": "127.0.0.1",
       "port":5432,
