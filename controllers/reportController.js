@@ -140,10 +140,15 @@ module.exports = {
                     array.push(cardnumber,element3.amount,element3.Commission.amount,element3.Concept.name,element3.date)
                   
                 })
-                doc.autoTable({
-                  head:[['Card Number','Amount','Commission','Concept','Date']],
-                  body:[array]
-              })
+                if(array.length>1){
+
+                  doc.autoTable({
+                    head:[['Card Number','Amount','Commission','Concept','Date']],
+                    body:[array]
+                  })
+                }else{
+                  doc.text(20,doc.lastAutoTable.finalY+10,"No Transactions found on this account")
+                }
 
             })
             
