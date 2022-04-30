@@ -32,7 +32,8 @@ module.exports = {
     //all registered transactions
     async index(req,res){
         try{
-            let {search} = req.params
+            let {search,page} = req.params
+            let offset = (page-1)*5
             //find all the registres with deletedAt = null (include all the relations)
             let data = null
             if(search!=="inicial"){
@@ -49,15 +50,20 @@ module.exports = {
                         }
                         }
                         ]}],
+                        offset,
+                        limit:5,
                     },{required: true})
             }else{
                 data = await transaction.findAll({
                     attributes:['id','amount','date'],include:[
                         {model:conceptModel,attributes:['name']},
+                        {model:executive,attributes:['name','lastname']},
                         {model:card,attributes:['card_number'],include:[
                             {model:account,attributes:['no_acc','type'],
                         }
                         ]}],
+                        offset,
+                        limit:5,
                     },{required: true})
             }
             //if there are any registers, return status OK (200), data null
