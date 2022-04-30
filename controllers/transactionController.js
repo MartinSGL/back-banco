@@ -8,6 +8,7 @@ const mortgage = require('../models').Mortgage
 const interest = require('../models').Interest
 const conceptModel = require('../models').Concept
 const client = require('../models').Client
+const executive = require('../models').Executive
 
 //resOk asks for two parameters (data and the model name)
 //resError asks for two parameters (error and data)
@@ -38,6 +39,7 @@ module.exports = {
                 data = await transaction.findAll({
                     attributes:['id','amount','date'],include:[
                         {model:conceptModel,attributes:['name']},
+                        {model:executive,attributes:['name','lastname']},
                         {model:card,attributes:['card_number'],include:[
                             {model:account,attributes:['no_acc','type'], 
                             where:{
