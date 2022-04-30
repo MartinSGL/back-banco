@@ -18,13 +18,15 @@ module.exports = (sequelize, DataTypes) => {
     {
       name: DataTypes.STRING,
       lastname: DataTypes.STRING,
-      gender: DataTypes.INTEGER,
+      gender: {
+        allowNull: false,
+        type: DataTypes.ENUM('0','1'),
+      },
       street: DataTypes.STRING,
       number_ext: DataTypes.INTEGER,
       colony: DataTypes.STRING,
       postalcode: DataTypes.INTEGER,
       city: DataTypes.STRING,
-      municipality: DataTypes.STRING,
       state: DataTypes.STRING,
       celphone: DataTypes.STRING,
       landline: DataTypes.STRING,

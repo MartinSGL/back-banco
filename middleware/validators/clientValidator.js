@@ -13,7 +13,7 @@ const checkBody = buildCheckFunction(["body"]);
 //     check('client.colony').not().isEmpty(),
 //     check('client.postalcode').not().isEmpty(),
 //     check('client.city').not().isEmpty(),
-//     check('client.municipality').not().isEmpty(),
+//     
 //     check('client.state').not().isEmpty(),
 //     check('client.celphone').not().isEmpty(),
 //     check('client.landline').not().isEmpty(),
@@ -51,7 +51,7 @@ const validateDebit =[
     check('client.colony').not().isEmpty(),
     check('client.postalcode').not().isEmpty(),
     check('client.city').not().isEmpty(),
-    check('client.municipality').not().isEmpty(),
+    
     check('client.state').not().isEmpty(),
     check('client.celphone').not().isEmpty().isNumeric().isLength({min: 10, max: 12}),
     check('client.landline').not().isEmpty(),
@@ -113,7 +113,7 @@ const validateCredit =[
     check('client.colony').not().isEmpty(),
     check('client.postalcode').not().isEmpty(),
     check('client.city').not().isEmpty(),
-    check('client.municipality').not().isEmpty(),
+    
     check('client.state').not().isEmpty(),
     check('client.celphone').not().isEmpty().isNumeric().isLength({min: 10, max: 12}),
     check('client.landline').not().isEmpty().isNumeric().isLength({min: 10, max: 12}),
@@ -153,7 +153,7 @@ const validateMortgage = [
   check("client.colony").not().isEmpty(),
   check("client.postalcode").not().isEmpty(),
   check("client.city").not().isEmpty(),
-  check("client.municipality").not().isEmpty(),
+  
   check("client.state").not().isEmpty(),
   check("client.celphone")
     .not()
@@ -170,8 +170,8 @@ const validateMortgage = [
   check("client.no_ine").not().isEmpty().isLength({ min: 18, max: 18 }),
   check("client.email").not().isEmpty(),
 
-  check("account.amount").not().isEmpty(),
-
+  check("mortgage.approved_amount").isEmpty(),
+  check("mortgage.approved_date").isEmpty(),
   check("mortgage.solicited_date").not().isEmpty(),
   check("mortgage.solicited_amount").not().isEmpty(),
   check("mortgage.InterestId").not().isEmpty(),
@@ -223,7 +223,7 @@ const updateValidate = [
     check('colony').not().isEmpty(),
     check('postalcode').not().isEmpty(),
     check('city').not().isEmpty(),
-    check('municipality').not().isEmpty(),
+    
     check('state').not().isEmpty(),
     check('celphone').not().isEmpty().isNumeric().isLength({min:10,max:10}),
     check('landline').not().isEmpty().isNumeric().isLength({min:10,max:12}),

@@ -17,9 +17,9 @@ const validateToken = require("../middleware/validateToken");
 const { PATH_V1 } = require("./1-paths");
 
 //anomalies
-router.get(`${PATH_V1}/mortgages/`, index);
-router.get(`${PATH_V1}/mortgages/:id`, show);
-router.put(`${PATH_V1}/mortgages/:id`,validate, update);
-router.delete(`${PATH_V1}/mortgages/:id`, destroy);
+router.get(`${PATH_V1}/mortgages/`,[validateToken], index);
+router.get(`${PATH_V1}/mortgages/:id`, [validateToken], show);
+router.put(`${PATH_V1}/mortgages/:id`,[validateToken,validate], update);
+router.delete(`${PATH_V1}/mortgages/:id`, [validateToken], destroy);
 
 module.exports = router;

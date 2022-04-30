@@ -273,7 +273,7 @@ module.exports = {
         });
         const account = await accounts.create(
           {
-            ...req.body.account,
+            amount: -1,
             type: "mortgage",
             ClientId: client.id,
             ExecutiveId: req.session.id,

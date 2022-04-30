@@ -153,9 +153,11 @@ module.exports = {
         const exp_date = new Date();
         exp_date.setFullYear(exp_date.getFullYear() + 3);
 
+        let {ClientId}=req.body.account;
         const account = await accounts.create(
           {
-            ...req.body.account,
+            ClientId:ClientId,
+            amount: -1,
             type: "mortgage",
             ExecutiveId: req.session.id,
             no_acc: createNoAcc(),

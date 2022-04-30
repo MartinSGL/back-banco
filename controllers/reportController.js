@@ -5,6 +5,10 @@ const concept = require("../models").Concept;
 const card = require("../models").Card;
 const client = require("../models").Client;
 const commission = require("../models").Commission;
+const mortgage = require("../models").Mortgage;
+const creditdetail = require("../models").Creditdetail;
+const interest = require("../models").Interest;
+const Replacements = require("../models").Replacement;
 //resOk asks for two parameters (data and the model name)
 //resError asks for two parameters (error and data)
 const { resOk, resError } = require("../helpers/responses");
@@ -23,11 +27,9 @@ const { Op } = require("sequelize");
 
 const modelName = "Position";
 const { jsPDF } = require("jspdf"); // will automatically load the node version
-const {autoTable} = require( 'jspdf-autotable')
-const pdfmailer = require("../helpers/pdfmailer")
-const mailer = require("../helpers/mailer")
-
-
+const { autoTable } = require("jspdf-autotable");
+const pdfmailer = require("../helpers/pdfmailer");
+const mailer = require("../helpers/mailer");
 
 module.exports = {
   async getAccounts(req, res) {
@@ -79,104 +81,109 @@ module.exports = {
 
   async accountStatus(req, res) {
     try {
-        let date = new Date();
-        let month = date.getMonth();
-        let year = date.getFullYear();
-    
-        //get all clients and transaction from the last month
-        //transaction is related to card
-        //card is related to account
-        //account is related to client
-        const dataCard = await card.findAll();
-        
-        const data = await client.findAll({
-          where: {
-            id: req.params.id,
+      let date = new Date();
+      let month = date.getMonth();
+      let year = date.getFullYear();
+
+      //get all clients and transaction from the last month
+      //transaction is related to card
+      //card is related to account
+      //account is related to client
+      const dataCard = await card.findAll();
+
+      const data = await client.findAll({
+        where: {
+          id: req.params.id,
+        },
+        include: [
+          {
+            model: account,
+            include: [
+              {
+                model: card,
+                include: [
+                  {
+                    model: transaction,
+                    include: [{ model: commission }, { model: concept }],
+                  },
+                ],
+              },
+            ],
           },
-          include: [
-            {
-              model: account,
-              include: [
-                {
-                  model: card,
-                  include: [
-                    {
-                      model: transaction,
-                      include: [{ model: commission }, { model: concept }],
-                      
-                    },
-                  ],
-                },
-              ],
-            },
-          ],
-        });
+        ],
+      });
 
-        if (!data) {
-          return res.status(NOT_FOUND).send(resError("Not registers found"));
-        }
-        
-        const doc = new jsPDF();
-        //console.log(data[0].Accounts[0].Cards[0].Transactions[0].Concept.amount);
-        let {name, lastname,rfc} = data[0];
+      if (!data) {
+        return res.status(NOT_FOUND).send(resError("Not registers found"));
+      }
 
-        
+      const doc = new jsPDF();
+      //console.log(data[0].Accounts[0].Cards[0].Transactions[0].Concept.amount);
+      let { name, lastname, rfc } = data[0];
+
+      doc.autoTable({
+        head: [["Name", "Last Name", "RFC"]],
+        body: [[name, lastname, rfc]],
+      });
+
+      data[0].Accounts.forEach((element) => {
         doc.autoTable({
-          head: [['Name', 'Last Name', 'RFC']],
-          body: [[name,lastname,rfc]],
-        })
-
-        data[0].Accounts.forEach(element => {
-            doc.autoTable({
-              head: [["Account Number", "Account Type", "Balance"]],
-              body: [[element.no_acc, element.type, element.amount]],
-            });
-            element.Cards.forEach(element2 =>{
-                let cardnumber = element2.card_number
-                console.log(cardnumber)
-                let array =[]
-                element2.Transactions.forEach(element3=>{
-                  console.log(element3)
-                    array.push(cardnumber,element3.amount,element3.Commission.amount,element3.Concept.name,element3.date)
-                  
-                })
-                if(array.length>1){
-
-                  doc.autoTable({
-                    head:[['Card Number','Amount','Commission','Concept','Date']],
-                    body:[array]
-                  })
-                }else{
-                  doc.text(20,doc.lastAutoTable.finalY+10,"No Transactions found on this account")
-                }
-
-            })
-            
-            
+          head: [["Account Number", "Account Type", "Balance"]],
+          body: [[element.no_acc, element.type, element.amount]],
         });
-        
+        element.Cards.forEach((element2) => {
+          let cardnumber = element2.card_number;
+          console.log(cardnumber);
+          let array = [];
+          element2.Transactions.forEach((element3) => {
+            console.log(element3);
+            array.push(
+              cardnumber,
+              element3.amount,
+              element3.Commission.amount,
+              element3.Concept.name,
+              element3.date
+            );
+          });
+          if (array.length > 1) {
+            doc.autoTable({
+              head: [
+                ["Card Number", "Amount", "Commission", "Concept", "Date"],
+              ],
+              body: [array],
+            });
+          } else {
+            doc.text(
+              20,
+              doc.lastAutoTable.finalY + 10,
+              "No Transactions found on this account"
+            );
+          }
+        });
+      });
 
+      var file = doc.output("datauristring");
+      // var fd = new FormData();     // To carry on your data
+      // fd.append('mypdf',file);
 
-        
-       
+      //send message to the client giving them a greeting and the pdf
+      let mailerOptions = {
+        emailC: data[0].email,
+        subjectC: "Account Status",
+        textC:
+          "Hello " +
+          data[0].name +
+          " " +
+          data[0].lastname +
+          "," +
+          " your account status is attached",
+        doc: file,
+        filename: "accountStatus.pdf",
+      };
 
-
-        var file = doc.output('datauristring');
-        // var fd = new FormData();     // To carry on your data  
-        // fd.append('mypdf',file);
-
-        //send message to the client giving them a greeting and the pdf 
-        let mailerOptions = {
-          emailC: data[0].email,
-          subjectC: "Account Status",
-          textC:  "Hello " + data[0].name + " " + data[0].lastname + "," + " your account status is attached",
-          doc: file,
-          filename:'accountStatus.pdf'
-        };
-        
-        pdfmailer( mailerOptions);
-        console.log(data[0].Accounts[0])
-      return res.status(OK).json(resOk("Todo Bien",data[0]));
+      pdfmailer(mailerOptions);
+      console.log(data[0].Accounts[0]);
+      return res.status(OK).json(resOk("Todo Bien", data[0]));
     } catch (error) {
       //if there are any error, send status ERROR (400)
       return res.status(ERROR).send(resError(error));
@@ -184,7 +191,7 @@ module.exports = {
   },
   // send nip to the clients email
   async sendData(req, res) {
-    try{
+    try {
       // obtain the id of the account from the url
       let id = req.params.id;
       //obtain the card from the account and the client
@@ -201,46 +208,110 @@ module.exports = {
           },
         ],
       });
-        
-       if (!accounts) {
-         return res.status(NOT_FOUND).send(resError("Not registers found"));
-       }
-        
-        const doc = new jsPDF();
-        //console.log(data[0].Accounts[0].Cards[0].Transactions[0].Concept.amount);
-        let {name, lastname,rfc} = accounts.Client;
 
-        doc.autoTable({
-          head: [['Name', 'Last Name', 'RFC']],
-          body: [[name,lastname,rfc]],
-        })
+      if (!accounts) {
+        return res.status(NOT_FOUND).send(resError("Not registers found"));
+      }
 
-        let {no_acc, type, amount } = accounts;
-        doc.autoTable({
-          head: [["Account Number", "Account Type", "Balance"]],
-          body: [[no_acc, type, amount]],
-        });
-        let {card_number, nip } = accounts.Cards[0];
-        doc.autoTable({
-          head:[['Card Number', 'NIP']],
-          body: [[card_number, nip]],
-        })
-        var file = doc.output('datauristring');
+      const doc = new jsPDF();
+      //console.log(data[0].Accounts[0].Cards[0].Transactions[0].Concept.amount);
+      let { name, lastname, rfc } = accounts.Client;
 
-      let mailerOptions= {
+      doc.autoTable({
+        head: [["Name", "Last Name", "RFC"]],
+        body: [[name, lastname, rfc]],
+      });
+
+      let { no_acc, type, amount } = accounts;
+      doc.autoTable({
+        head: [["Account Number", "Account Type", "Balance"]],
+        body: [[no_acc, type, amount]],
+      });
+      let { card_number, nip } = accounts.Cards[0];
+      doc.autoTable({
+        head: [["Card Number", "NIP"]],
+        body: [[card_number, nip]],
+      });
+      var file = doc.output("datauristring");
+
+      let mailerOptions = {
         emailC: accounts.Client.email,
         subjectC: "Account Information",
-        textC:  "Hello " + accounts.Client.name + " " + accounts.Client.lastname + ",",
+        textC:
+          "Hello " +
+          accounts.Client.name +
+          " " +
+          accounts.Client.lastname +
+          ",",
         doc: file,
-        filename:'AccountInfo.pdf'
+        filename: "AccountInfo.pdf",
       };
-      
-      pdfmailer( mailerOptions);
+
+      pdfmailer(mailerOptions);
 
       return res.status(OK).json(resOk("Data sended"));
-    }catch (error) {
+    } catch (error) {
       //if there are any error, send status ERROR (400)
       return res.status(ERROR).send(resError(error));
     }
-    },
+  },
+
+  async sendTable(req, res) {
+    try {
+    } catch (error) {
+      //if there are any error, send status ERROR (400)
+      return res.status(ERROR).send(resError(error));
+    }
+  },
+
+  async getRepositionsByDay(req, res) {
+    try {
+      const today = new Date();
+      const repositions = await Replacements.findAll({
+        where: {
+          createdAt: {
+            [Op.between]: [
+              today.setHours(0, 0, 0, 0),
+              today.setHours(23, 59, 59, 999),
+            ],
+          },
+        },
+      });
+      return res.status(OK).json(resOk(repositions.length));
+    } catch (error) {
+      return res.status(ERROR).send(resError(error));
+    }
+  },
+
+  async getdebtors (req, res) {
+    //obtain the numbre of accounts of type credit and mortgage separated with amount more than 0
+    try {
+      const accounts = await account.findAll({
+        where: {
+          type: {
+            [Op.or]: ["credit", "mortgage"],
+          },
+          amount: {
+            [Op.gt]: 0,
+          },
+        },
+        group: ["type","id"],
+      });
+      //seperate the accounts by type
+      let cred = [];
+      let mor = [];
+      accounts.forEach(async (element) => {
+        if (element.type == "credit") {
+          cred.push(element);
+        } else if (element.type == "mortgage") {
+          mor.push(element);
+        }
+      });
+      
+      return res.status(OK).json(resOk([cred.length,mor.length]));
+    } catch (error) {
+      return res.status(ERROR).send(resError(error));
+    }
+  
+  }
 };
