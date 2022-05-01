@@ -11,7 +11,7 @@ module.exports = (req,res,next)=>{
     }
 
     const decodedToken = jwt.verify(token,process.env.FIRMA)
-    req.session = {id:decodedToken.session.id}
+    req.session = {id:decodedToken.session.id,name:decodedToken.session.name,rol:decodedToken.session.rol}
 
     return next()
 

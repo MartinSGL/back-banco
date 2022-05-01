@@ -19,7 +19,6 @@ const {resOk,resError} = require('../helpers/responses')
 const {OK,ERROR,UNAUTHORIZED,VALIDATION,NOT_FOUND} = require('../helpers/status')
 //sequelize for made internal queries
 const {sequelize} = require('../models');
-
 //mailer helper for messages and responses
 const { Op } = require("sequelize");
 const mailer = require('../helpers/mailer')
@@ -33,39 +32,81 @@ module.exports = {
     async index(req,res){
         try{
             let {search,page} = req.params
+            let {rol} = req.session
+            console.log(req.session)
             let offset = (page-1)*5
             //find all the registres with deletedAt = null (include all the relations)
             let data = null
-            if(search!=="inicial"){
-                data = await transaction.findAll({
-                    attributes:['id','amount','date'],include:[
-                        {model:conceptModel,attributes:['name']},
-                        {model:executive,attributes:['name','lastname']},
-                        {model:card,attributes:['card_number'],include:[
-                            {model:account,attributes:['no_acc','type'], 
+            console.log(rol)
+            if(rol==='manager'){
+                if(search!=="inicial"){
+                    data = await transaction.findAndCountAll({
+                        attributes:['id','amount','date'],include:[
+                            {model:conceptModel,attributes:['name']},
+                            {model:executive,attributes:['name','lastname']},
+                            {model:card,attributes:['card_number'],include:[
+                                {model:account,attributes:['no_acc','type'], 
+                            }
+                            ]}],
                             where:{
-                            no_acc: {
-                            [Op.like]: `%${search}%`,
-                        },
-                        }
-                        }
-                        ]}],
-                        offset,
-                        limit:5,
-                    },{required: true})
+                                '$Card.Account.no_acc$': {
+                                    [Op.like]: `%${search}%`,
+                                },
+                            }, 
+                            offset,
+                            limit:5,
+                        },{required: true})
+                }else{
+                    data = await transaction.findAndCountAll({
+                        attributes:['id','amount','date'],include:[
+                            {model:conceptModel,attributes:['name']},
+                            {model:executive,attributes:['name','lastname']},
+                            {model:card,attributes:['card_number'],include:[
+                                {model:account,attributes:['no_acc','type'],
+                            }
+                            ]}],
+                            offset,
+                            limit:5,
+                        },{required: true})
+                }
             }else{
-                data = await transaction.findAll({
-                    attributes:['id','amount','date'],include:[
-                        {model:conceptModel,attributes:['name']},
-                        {model:executive,attributes:['name','lastname']},
-                        {model:card,attributes:['card_number'],include:[
-                            {model:account,attributes:['no_acc','type'],
-                        }
-                        ]}],
-                        offset,
-                        limit:5,
-                    },{required: true})
+                if(search!=="inicial"){
+                    data = await transaction.findAndCountAll({
+                        attributes:['id','amount','date'],include:[
+                            {model:conceptModel,attributes:['name']},
+                            {model:executive,attributes:['name','lastname']},
+                            {model:card,attributes:['card_number'],include:[
+                                {model:account,attributes:['no_acc','type'], 
+                            }
+                            ]}],
+                            where:{
+                                '$Card.Account.no_acc$': {
+                                    [Op.like]: `%${search}%`,
+                                },
+                                ExecutiveId:req.session.id
+                            }, 
+                            offset,
+                            limit:5,
+                        },{required: true})
+                }else{
+                    data = await transaction.findAndCountAll({
+                        attributes:['id','amount','date'],include:[
+                            {model:conceptModel,attributes:['name']},
+                            {model:executive,attributes:['name','lastname']},
+                            {model:card,attributes:['card_number'],include:[
+                                {model:account,attributes:['no_acc','type'],
+                            }
+                            ]}],
+                            where:{
+                                ExecutiveId:req.session.id
+                            },
+                            offset,
+                            limit:5,
+                        },{required: true})
+                }
+                
             }
+            
             //if there are any registers, return status OK (200), data null
             if(data===null) return res.status(OK).json(resOk(null)) 
             //if registres are found, registres in json format and status OK (200)
