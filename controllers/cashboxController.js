@@ -57,7 +57,7 @@ module.exports = {
                             date
                             ),
                         ],
-                        type:"final"
+                        ExecutiveId:req.session.id
                     }
                 }],
                 

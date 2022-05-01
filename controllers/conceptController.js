@@ -22,6 +22,20 @@ module.exports = {
             return res.status(ERROR).send(resError(error));
         }
     },
+    //all registered concepts
+    async show(req,res){
+        try{
+            let {id} =  req.params
+            let data = await concept.findOne({where:{id}}) //find register where id
+            //if there are any registers, return status OK (200), data null and model name
+            if(data===null) return res.status(OK).json(resOk(null)) 
+            //if registres are found, registres in json format and status OK (200)
+            return res.status(OK).json(resOk(data))
+        }catch(error){
+            //if there are any error, send status ERROR (400)
+            return res.status(ERROR).send(resError(error));
+        }
+    },
     //create a new concept
     async create(req,res){
         try{

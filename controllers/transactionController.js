@@ -33,11 +33,9 @@ module.exports = {
         try{
             let {search,page} = req.params
             let {rol} = req.session
-            console.log(req.session)
             let offset = (page-1)*5
             //find all the registres with deletedAt = null (include all the relations)
             let data = null
-            console.log(rol)
             if(rol==='manager'){
                 if(search!=="inicial"){
                     data = await transaction.findAndCountAll({

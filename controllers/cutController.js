@@ -4,6 +4,7 @@ const denomination = require('../models').Denomination;
 const transaction = require('../models').Transaction;
 const card = require('../models').Card;
 const account = require('../models').Account;
+const executive = require('../models').Executive;
 const {sequelize} = require('../models');
 const {resOk,resError} = require('../helpers/responses')
 //revisar el helper para ver el numero de estatus
@@ -29,9 +30,30 @@ const validate = async (denominations,total_cut)=>{
 module.exports = {
     async index(req,res){
         try{
-            const data = await cut.findAll({include:[{model:cashbox},{
-                model:denomination, through:{attributes:['amount']}
-            }]})
+            let {rol,id} = req.session
+            data = []
+            if(rol==='manager'){
+
+                data = await cut.findAll({
+                    include:[
+                    {model:executive,attributes:['name','lastname']},
+                    {model:cashbox},{
+                    model:denomination, through:{attributes:['amount']}
+                }]})
+            
+            }else{
+
+                data = await cut.findAll({
+                    include:[
+                        {model:executive,attributes:['name','lastname']},
+                        {model:cashbox},
+                        {model:denomination, through:{attributes:['amount']}
+                    }],
+                    where:{ExecutiveId:id}
+                })
+                    
+            }
+            
             if(data.length === 0){
                 return res.status(OK).json(resOk(null))
             }
@@ -46,9 +68,26 @@ module.exports = {
             let {total_cut,type,CashboxId} = req.body
             let date = new Date()
             let ExecutiveId = req.session.id
+            //barrabas--------------------------------------------------------------------
+            if(type==="final"){
+                let validarCorteInicial = await cut.findOne({
+                where:{
+                        type:"initial",
+                        [Op.and]: [
+                            sequelize.where(
+                              sequelize.fn("date", sequelize.col("date")),
+                              "=",
+                              date
+                            ),
+                          ],
+                    }
+                })
+
+                if(!validarCorteInicial) return res.status(VALIDATION).json(resError("there must be an initial cut first"))
+            }
+             //barrabas---------------------------------------------------------------------------------
             //m10c,m50c,m1p,m2p,m5p,m10p,m20p,b20p,b50p,b100p,b200p,b500p,b1000p ids de denominaciones
             let denominations = req.body.denominations
-            console.log(req.body)
             //validar que el total coincida con las denominaciones
             let total_denomination = await validate(denominations,total_cut)
             if(!total_denomination)  return res.status(VALIDATION).json(resError("denominations doesn't not match with total")) 
