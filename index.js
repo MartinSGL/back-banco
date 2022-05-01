@@ -12,10 +12,8 @@ app.use(express.urlencoded(({extended:true})))
 const PORT = process.env.PORT || 9000;
 
 app.get('/', (req,res)=>{
-    res.send('bienvenido a la api')
+    res.send('welcome to API Bancomex')
 })
-
-app.use(favicon(__dirname + 'favicon.ico'));
 
 //usar las rutas
 require('./routes/2-indexRoutes')(app)
