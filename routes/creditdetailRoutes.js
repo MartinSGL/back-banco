@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const {PATH_V1} = require('./1-paths');
 const {create,index,update,destroy} = require('../controllers/creditDetailsController');
-const {validate} = require('../middleware/validators/creditdetailsValidator');
+const {validate} = require('../middleware/validators/creditDetailsValidator');
 const validateToken = require('../middleware/validateToken');
 
 //codigo
