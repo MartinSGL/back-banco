@@ -6,7 +6,7 @@ const {resOk,resError} = require('../helpers/responses');
 //status number: OK:200, ERROR:400, UNAUTHORIZED:401, VALIDATION:403,NOT_FOUND:404
 const {OK,ERROR,UNAUTHORIZED,VALIDATION,NOT_FOUND} = require('../helpers/status');
 
-const modelName = 'Creditdetail';
+const modelName = 'Creditdetail'
 
 module.exports = {
     //all registered creditdetails
