@@ -11,6 +11,10 @@ app.use(express.urlencoded(({extended:true})))
 
 const PORT = process.env.PORT || 9000;
 
+app.get('/', (req,res)=>{
+    res.send('bienvenido a la api')
+})
+
 //usar las rutas
 require('./routes/2-indexRoutes')(app)
 
