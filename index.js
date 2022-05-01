@@ -9,9 +9,11 @@ require('dotenv').config();
 app.use(express.json())
 app.use(express.urlencoded(({extended:true})))
 
+const PORT = process.env.PORT || 9000;
+
 //usar las rutas
 require('./routes/2-indexRoutes')(app)
 
-app.listen(9000, ()=>{
-    console.log('El servidor esta activo en el puerto:9000');
+app.listen(PORT, ()=>{
+    console.log(`El servidor esta activo en el puerto:${PORT}`);
 })
