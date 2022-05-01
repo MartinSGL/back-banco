@@ -1,6 +1,9 @@
 //modelo requerido
 const mortgages = require("../models").Mortgage;
 const interest = require("../models").Interest;
+const account = require("../models").Account;
+
+const { sequelize } = require("../models");
 
 //resOk pide dos parametros (data y nombre del modelo)
 //resError pide dos parametros (error y data)
@@ -30,20 +33,20 @@ module.exports = {
     }
   },
   //show by id
-    async show(req, res) {
-        try {
-            let data = await mortgages.findOne({
-              where: {
-                id: req.params.id,
-              },
-            });
-            if (data === null) return res.status(NOT_FOUND).json(resOk(null));
-            return res.status(OK).json(resOk(data));
-        } catch (error) {
-            //regresar estatus ERROR y respuesta incorrecta
-            return res.status(ERROR).send(resError(error));
-        }
-    },
+  async show(req, res) {
+    try {
+      let data = await mortgages.findOne({
+        where: {
+          id: req.params.id,
+        },
+      });
+      if (data === null) return res.status(NOT_FOUND).json(resOk(null));
+      return res.status(OK).json(resOk(data));
+    } catch (error) {
+      //regresar estatus ERROR y respuesta incorrecta
+      return res.status(ERROR).send(resError(error));
+    }
+  },
 
   async update(req, res) {
     try {
@@ -51,16 +54,36 @@ module.exports = {
       let idFound = await mortgages.findOne({ where: { id } }); //comprobar si existe el id en la base de datos
       //regresar error NOT_FOUND = 404 en caso de no encontrar
       if (idFound === null)
-        return res.status(NOT_FOUND).json(resOk(null, modelName));
+        return res.status(NOT_FOUND).json(resOk("Record not found"));
       //actualizar los parametros enviados en req.body recuerda que para utilizar req.body sin destructurar
       //los parametros enviados se deben llamar igual en base de datos y desde el formulario enviado (name)
-      let [, data] = await mortgages.update({...req.body,aproved_date:Date.now()}, {
-        where: { id },
-        returning: true,
-        plain: true,
+      let { aproved_amount } = req.body;
+      
+      if (idFound.aproved_date) {
+        return res.status(OK).json(resOk("Mortgage already approved"));
+      }
+      const result = await sequelize.transaction(async (t) => {
+        let [, data] = await mortgages.update(
+          { aproved_amount, aproved_date: Date.now() },
+          {
+            where: { id },
+            returning: true,
+            plain: true,
+          },
+          { transaction: t }
+        );
+        let [, data2] = await account.update(
+          { amount: aproved_amount },
+          {
+            where: { id: idFound.AccountId },
+            returning: true,
+            plain: true,
+          },
+          { transaction: t }
+        );
+        return res.status(OK).json(resOk([data, data2]));
       });
-      //regresar estatus OK y respuesta correcta
-      return res.status(OK).json(resOk(data));
+      
     } catch (error) {
       //si se comete un error mandar un status ERROR = 400
       return res.status(ERROR).json(resError(error));
@@ -86,5 +109,5 @@ module.exports = {
       //si se comete un error mandar un status ERROR = 400
       return res.status(ERROR).json(resError(error));
     }
-  }
+  },
 };

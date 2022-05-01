@@ -77,7 +77,7 @@ const validateCredit =[
 ]
 
 const validateMortgage = [
-  check("account.amount").not().isEmpty(),
+  
 
   check("mortgage.solicited_date").not().isEmpty(),
   check("mortgage.solicited_amount").not().isEmpty(),
