@@ -30,6 +30,14 @@ const { jsPDF } = require("jspdf"); // will automatically load the node version
 const { autoTable } = require("jspdf-autotable");
 const pdfmailer = require("../helpers/pdfmailer");
 const mailer = require("../helpers/mailer");
+//import moment
+const moment = require("moment");
+
+//Bank Logo
+const imagedata="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAABmJLR0QA/wD/AP+gvaeTAAADyElEQVR4nO2ayWsUQRSHq8XEBOLFoxq8KC7RKIJxx0SIenD5LwQFETyIR28uRDFxCejNowgeFEE8aBK9a9xAFFcQ8SAmY5ZD/Dz0a6ZsM5Pqnlo6Oh8MyVS9V/2r1/VeV/e0UoEAuoFnwDDQHUqHd4CFwHX+5jawJLQ+ZwCNwAmgJBMeBY7LZ1TaSmLTGFqvVYAu4Hmlsz3NqngN7Amp2QpZJwZ0VgvUrAFoAI4CIzKRn8BJYJ5L30Iw03LPMM7sSgtXggufFj6WbGHTwtZyz3C8YqRFaCHB0qJIS9GWlijjQQeVUtszKfXPYBRFO0yN52QcfDKjfQj8aUwS0LTftX0esq6Af465NgbJehZc22eh1hXwyMBmyKN9GHznuo3cT/jva0A9AKEFhKYegNACQlMPQGgBoakpAMDjatdn+Trkyz4PmW6H05huRqIoinzY58HKvUAlAZUm4No+C/UakMepUm6mSfc7ts9VC3Lljo2l54I8taCmGlBL8bFJLSekXgNMDZO8N8lNjQlgX2qcduAy8Ir4fYAx+f8i0J6yPQBMznSQafTYf0hiMNlKAdgr/k3AVeBXFfspoB95tg/slzEy4ywAOX2bgQEZYhzoBTqAFunbAJyXPoAH5PyxpagBuCbun4F1Wvtj/tz6tgEfxPaKb51GAxtSAraI33riZT8BrNXGO6zZHwGS7e9q4rowldgD24h/+jLGRQCGcgagX9r6tLE28nct2Kn1n9N9gK2UX64yYdB6APICvBRRG7W2g9L2ENgHnAFatP710v8ijGqLUK7i+gSXUS54b4FdKZ8m6Rv3r9gy2kRbUu27gTfSNwYs1frmSYqUXOvzsRN8J3/bkgagWSnVqZQ6ppQaUEo1K6W6NJ82Fd+nvPegzy3AFb2gSduOVNH6BXRo/eel/WIY1RYB1lC+DK6Ttoj40pdwKGU/IT6rwim3CHBJJpreCD0CBrTv7cBHse0No9YBxNvd+zKxSQnIZmA+8XZ4E/H2OLli3AOaQuu2igShj5lvhi78c5PXAVbK2R7WJv5UJr4itD6vJLMPqaH+RCi0gNBYDQDQCtyk/PZmVTQ/E0aAW8Bym5qtPdUFWpVST5RSC2yNWYHvSqm1URR9cnycbMiZB7gDLDL0MS6CwGLgrrjcqE2tA7RlvziDT6argKQYwI98Kh2S55Lmy6caNRdB4tfWz2jfTwNVf3Hy5eMF4sdZaU4VwccLwFcRs4H46S3AlyL4mGBzHzBHlS+rpuP68nEH0DPN0jxbBB8vEBenc8A3+fQADUXwMeE3iItthPC6xpsAAAAASUVORK5CYII="
+      
+
+
 
 module.exports = {
   async getAccounts(req, res) {
@@ -118,10 +126,15 @@ module.exports = {
       }
 
       const doc = new jsPDF();
-      //console.log(data[0].Accounts[0].Cards[0].Transactions[0].Concept.amount);
+      doc.addImage(imagedata,'PNG', 10,0,20,20, 'bancomex');
+      doc.setTextColor("#4287f5");
+      doc.text("BancoMex",30,15);
+      doc.setTextColor(0,0,0);
+      doc.text("Account Status", 90,20);
       let { name, lastname, rfc } = data[0];
 
       doc.autoTable({
+        margin:{ top: 30 },
         head: [["Name", "Last Name", "RFC"]],
         body: [[name, lastname, rfc]],
       });
@@ -133,10 +146,8 @@ module.exports = {
         });
         element.Cards.forEach((element2) => {
           let cardnumber = element2.card_number;
-          console.log(cardnumber);
           let array = [];
           element2.Transactions.forEach((element3) => {
-            console.log(element3);
             array.push(
               cardnumber,
               element3.amount,
@@ -163,9 +174,6 @@ module.exports = {
       });
 
       var file = doc.output("datauristring");
-      // var fd = new FormData();     // To carry on your data
-      // fd.append('mypdf',file);
-
       //send message to the client giving them a greeting and the pdf
       let mailerOptions = {
         emailC: data[0].email,
@@ -182,7 +190,6 @@ module.exports = {
       };
 
       pdfmailer(mailerOptions);
-      console.log(data[0].Accounts[0]);
       return res.status(OK).json(resOk("Todo Bien", data[0]));
     } catch (error) {
       //if there are any error, send status ERROR (400)
@@ -214,10 +221,16 @@ module.exports = {
       }
 
       const doc = new jsPDF();
-      //console.log(data[0].Accounts[0].Cards[0].Transactions[0].Concept.amount);
+      
+      doc.addImage(imagedata,'PNG', 10,0,20,20, 'bancomex');
+      doc.setTextColor("#4287f5");
+      doc.text("BancoMex",30,15);
+      doc.setTextColor(0,0,0);
+      doc.text("Account Info", 90,20);
       let { name, lastname, rfc } = accounts.Client;
 
       doc.autoTable({
+        margin:{ top: 30 },
         head: [["Name", "Last Name", "RFC"]],
         body: [[name, lastname, rfc]],
       });
@@ -313,5 +326,165 @@ module.exports = {
       return res.status(ERROR).send(resError(error));
     }
   
-  }
+  },
+
+  async amortization (req, res) {
+    try{
+      //obtain id from paramas
+      const id = req.params.id;
+      //find the account by id
+      const accounts = await account.findOne({
+        where: {
+          id: id,
+        },
+        include: [
+          { model: creditdetail },
+          {
+            model: mortgage,
+            include: [{ model: interest }],
+          },
+          {model: client}
+        ],
+      });
+
+      if (!accounts) {
+        return res.status(NOT_FOUND).send(resError("Not registers found"));
+      }
+      //return the account
+      let data=[]
+      //check if type is credit
+      if (accounts.type === "credit") {
+        //get debt terms from creditdetail in account
+        const debtTerm = accounts.Creditdetails[0].debterms;
+        //get the interest rate from creditdetail in account
+        const interest = accounts.Creditdetails[0].interest;
+        //get createdAt from account
+        const createdAt = accounts.createdAt;
+
+        // get amount from account
+        let amount = accounts.amount;
+
+        //divide amount by debtterms
+        let amort = amount / debtTerm;
+
+        let interestAmount=0;
+
+        let total=0;
+        let period = 0;
+        let commissionf = 0;
+        //set date to createdAt and use dd-mm-yyyy format
+        let date = moment(createdAt).format("DD-MM-YYYY");
+
+        for (let i = 0; i < debtTerm; i++) {
+          
+          //multiply by interest rate
+          interestAmount = amount * interest;
+          total = interestAmount + amort;
+          total= total + (total * 0.01);
+          amount = amount - amort;
+
+          commissionf = total * 0.01;
+          //add all to data
+          period = i + 1;
+          
+          date = moment(date, "DD-MM-YYYY").add(1, "month").endOf("month").format("DD-MM-YYYY");
+
+          //add to data and round to 2 decimals
+
+          data.push([date, interestAmount.toFixed(2), amort.toFixed(2), commissionf.toFixed(2), Math.ceil(total), Math.ceil(amount)]);
+
+        }
+        
+      } else if (accounts.type === "mortgage") {
+        //get debt terms from interest 
+        const debtTerm = accounts.Mortgage.Interest.debterms;
+        //get the interest rate from interest
+        const interest = accounts.Mortgage.Interest.interest;
+        //get createdAt from account
+        const createdAt = accounts.createdAt;
+        
+        // get amount from account
+        let amount = accounts.amount;
+        
+        //divide amount by debtterms
+        let amort = amount / debtTerm;
+        let interestAmount=0;
+        let total=0;
+        let period = 0;
+        let commissionf = 0;
+        //set date to createdAt and use dd-mm-yyyy format
+        let date = moment(createdAt).format("DD-MM-YYYY");
+
+        for (let i = 0; i < debtTerm; i++) {
+          //multiply by interest rate
+          interestAmount = amount * interest;
+          total = interestAmount + amort;
+          total= total + (total * 0.01);
+          amount = amount - amort;
+
+          commissionf = total * 0.01;
+          //add all to data
+          period = i + 1;
+          
+
+          date = moment(date, "DD-MM-YYYY").add(1, "month").endOf("month").format("DD-MM-YYYY");
+
+          //add to data and round to 2 decimals
+
+          data.push([date, interestAmount.toFixed(2), amort.toFixed(2), commissionf.toFixed(2), Math.ceil(total), Math.ceil(amount)]);
+          
+          
+        }
+      }
+      else{
+        return res.status(NOT_FOUND).send(resError("Account type no valid"));
+      }
+      
+      //make a pdf table with the data
+      const doc = new jsPDF();
+
+      //Add title to pdf that reads "Amortization" and the name od the bank"BancoMex"
+      doc.addImage(imagedata,'PNG', 10,0,20,20, 'bancomex');
+      doc.setTextColor("#4287f5");
+      doc.text("BancoMex",30,15);
+      doc.setTextColor(0,0,0);
+      doc.text("Amortization", 90,20);
+      doc.setFontSize(10);
+      doc.text("Client: "+accounts.Client.name+" "+accounts.Client.lastname, 150,10);
+      doc.text("Account: "+accounts.no_acc, 150,15);
+      doc.text("Type: "+accounts.type, 150,20);
+  
+      //add the table to the pdf at the end of the last line
+      doc.autoTable({
+        margin: { top: 30 },
+        head: [["Date", "Interests", "Amortization","Commission", "Total" ,"Amount"]],
+        body: data,
+      });
+
+      var file = doc.output("datauristring");
+      //send the pdf to the client
+      let mailerOptions = {
+        emailC: accounts.Client.email,
+        subjectC: "Amortization",
+        textC:
+          "Hello " +
+          accounts.Client.name +
+          " " +
+          accounts.Client.lastname +
+          ",",
+        doc: file,
+        filename: "Amortization.pdf",
+      };
+      pdfmailer(mailerOptions);
+
+      
+
+      return res.status(OK).json(resOk(accounts));
+
+
+    } catch (error) {
+      return res.status(ERROR).send(resError(error));
+    }
+  },
+
 };
