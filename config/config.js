@@ -6,7 +6,11 @@ module.exports = {
     "database": process.env.DATABASE_DB,
     "host": process.env.HOST_DB,
     "port": process.env.PORT_DB,
-    "dialect": process.env.DIALECT_DB,
+    dialectOptions: {
+      ssl: {
+          rejectUnauthorized: false
+      }
+    },
     "seederStorage":process.env.SEEDER_STORAGE_DB,
     "seederStorageTableName":process.env.SEEDER_STORAGE_TABLE_DB,
     "listen_addresses" : "*",
