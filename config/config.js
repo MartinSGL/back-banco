@@ -8,12 +8,11 @@ module.exports = {
     "port": process.env.PORT_DB,
     "dialectOptions": {
       ssl: {
-          rejectUnauthorized: false
-      }
+        require: true,
+        ca: fs.readFileSync(`${__dirname}/us-east-1-bundle.pem`),
+      },
     },
     "seederStorage":process.env.SEEDER_STORAGE_DB,
     "seederStorageTableName":process.env.SEEDER_STORAGE_TABLE_DB,
-    "listen_addresses" : "*",
-    ssl: true
   },
 }
