@@ -6,10 +6,10 @@ module.exports = {
     "database": process.env.DATABASE_DB,
     "host": process.env.HOST_DB,
     "port": process.env.PORT_DB,
+    "dialect": process.env.DIALECT_DB,
     "dialectOptions": {
       ssl: {
-        require: true,
-        ca: fs.readFileSync(`${__dirname}/us-east-1-bundle.pem`),
+          rejectUnauthorized: false
       },
     },
     "seederStorage":process.env.SEEDER_STORAGE_DB,
