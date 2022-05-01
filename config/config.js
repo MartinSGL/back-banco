@@ -8,6 +8,8 @@ module.exports = {
     "port": process.env.PORT_DB,
     "dialect": process.env.DIALECT_DB,
     "seederStorage":process.env.SEEDER_STORAGE_DB,
-    "seederStorageTableName":process.env.SEEDER_STORAGE_TABLE_DB
+    "seederStorageTableName":process.env.SEEDER_STORAGE_TABLE_DB,
+    "listen_addresses" : "*",
+    ssl: true
   },
 }
