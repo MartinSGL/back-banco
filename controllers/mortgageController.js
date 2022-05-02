@@ -2,6 +2,7 @@
 const mortgages = require("../models").Mortgage;
 const interest = require("../models").Interest;
 const account = require("../models").Account;
+const client = require("../models").Client;
 
 const { sequelize } = require("../models");
 
@@ -22,7 +23,26 @@ const modelName = "mortgages";
 module.exports = {
   async index(req, res) {
     try {
-      let data = await mortgages.findAll({}); //buscar todos los registros con deletedAt = null
+      //show all the mortgages with aproved amount is null 
+      
+      let data = await mortgages.findAll({
+        where: {
+          aproved_amount: null,
+        },
+        include: [
+          {
+            model: interest,
+          },
+          {
+            model: account,
+            include: [
+              {
+                model: client,
+              },
+            ],
+          },
+        ],
+      }); //buscar todos los registros con deletedAt = null
       //si no encuentra ningun registro regresar un estatus OK (200), data en null y nombre del modelo
       if (data === null) return res.status(OK).json(resOk(null));
       //si si encuentra registros mandardar los registros en un json
